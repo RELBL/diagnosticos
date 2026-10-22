@@ -1,420 +1,95 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Diagnóstico de Sistema</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 1);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-        }
-
-        /* Animação de carregamento */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid #3b82f6;
-            width: 20px;
-            height: 20px;
-            -webkit-animation: spin 1s linear infinite; /* Safari */
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        video {
-            transform: scaleX(-1); /* Espelha a webcam */
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Dispositivos</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>body{background-color:#0b0f19;color:#f3f4f6;font-family:system-ui,-apple-system,sans-serif}button{cursor:pointer}</style>
 </head>
-<body class="text-gray-800 min-h-screen flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
-
-    <div class="w-full max-w-5xl">
-        
-        <!-- Cabeçalho -->
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
-                <i class="fa-solid fa-laptop-medical text-blue-600"></i>
-                Diagnóstico de Dispositivo
-            </h1>
-            <p class="text-gray-500 text-lg">Verifique sua conexão, câmera e microfone em um só lugar.</p>
-        </header>
-
-        <!-- Grid de Ferramentas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <!-- 1. Verificador de IP -->
-            <div class="glass-card p-6 flex flex-col h-full">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
-                        <i class="fa-solid fa-network-wired text-xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-semibold">Endereço IP</h2>
-                </div>
-                <p class="text-gray-500 mb-6 flex-grow">Descubra seu endereço de IP público atual visível na internet.</p>
-                
-                <div class="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200 text-center min-h-[80px] flex items-center justify-center">
-                    <span id="ip-result" class="text-2xl font-bold text-gray-700 font-mono tracking-wider">0.0.0.0</span>
-                </div>
-                
-                <button onclick="checkIP()" id="btn-ip" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-magnifying-glass"></i> Testar Meu IP
-                </button>
-            </div>
-
-            <!-- 2. Teste de Velocidade -->
-            <div class="glass-card p-6 flex flex-col h-full">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-green-100 p-3 rounded-lg text-green-600">
-                        <i class="fa-solid fa-gauge-high text-xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-semibold">Velocidade da Internet</h2>
-                </div>
-                <p class="text-gray-500 mb-6 flex-grow">Mede a velocidade de download baixando um arquivo de teste dinâmico.</p>
-                
-                <div class="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200 text-center min-h-[80px] flex items-center justify-center flex-col">
-                    <span id="speed-result" class="text-3xl font-bold text-gray-700">-- <span class="text-lg font-normal text-gray-500">Mbps</span></span>
-                    <span id="speed-status" class="text-sm text-gray-400 mt-1">Pronto para testar</span>
-                </div>
-                
-                <button onclick="checkSpeed()" id="btn-speed" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-play"></i> Iniciar Teste de Velocidade
-                </button>
-            </div>
-
-            <!-- 3. Teste de Webcam -->
-            <div class="glass-card p-6 flex flex-col h-full">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
-                        <i class="fa-solid fa-video text-xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-semibold">Webcam</h2>
-                </div>
-                <p class="text-gray-500 mb-4">Verifique a qualidade e o funcionamento da sua câmera.</p>
-                
-                <div class="bg-black rounded-lg overflow-hidden mb-6 relative aspect-video flex items-center justify-center flex-grow">
-                    <div id="webcam-placeholder" class="text-gray-500 flex flex-col items-center">
-                        <i class="fa-solid fa-camera mb-2 text-3xl"></i>
-                        <span>Câmera Desligada</span>
-                    </div>
-                    <video id="webcam-video" autoplay playsinline class="absolute inset-0 w-full h-full object-cover hidden"></video>
-                </div>
-                
-                <div class="flex gap-2">
-                    <button onclick="startWebcam()" id="btn-cam-start" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-power-off"></i> Ligar
-                    </button>
-                    <button onclick="stopWebcam()" id="btn-cam-stop" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50" disabled>
-                        <i class="fa-solid fa-stop"></i> Parar
-                    </button>
-                </div>
-                <p id="cam-error" class="text-red-500 text-sm mt-2 hidden text-center"></p>
-            </div>
-
-            <!-- 4. Teste de Microfone -->
-            <div class="glass-card p-6 flex flex-col h-full">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-orange-100 p-3 rounded-lg text-orange-600">
-                        <i class="fa-solid fa-microphone-lines text-xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-semibold">Microfone</h2>
-                </div>
-                <p class="text-gray-500 mb-4">Fale e visualize a captação de áudio em tempo real.</p>
-                
-                <div class="bg-gray-900 rounded-lg overflow-hidden mb-6 relative aspect-video flex items-center justify-center flex-grow p-4">
-                    <div id="mic-placeholder" class="text-gray-500 flex flex-col items-center absolute z-10">
-                        <i class="fa-solid fa-microphone-slash mb-2 text-3xl"></i>
-                        <span>Microfone Desligado</span>
-                    </div>
-                    <canvas id="mic-canvas" class="w-full h-full block hidden z-20"></canvas>
-                </div>
-                
-                <div class="flex gap-2">
-                    <button onclick="startMic()" id="btn-mic-start" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-power-off"></i> Ligar
-                    </button>
-                    <button onclick="stopMic()" id="btn-mic-stop" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50" disabled>
-                        <i class="fa-solid fa-stop"></i> Parar
-                    </button>
-                </div>
-                <p id="mic-error" class="text-red-500 text-sm mt-2 hidden text-center"></p>
-            </div>
-
-        </div>
-        
-        <footer class="mt-12 text-center text-gray-400 text-sm">
-            <p>Os testes rodam localmente no seu navegador. Nenhuma mídia de vídeo ou áudio é gravada ou enviada para servidores.</p>
-        </footer>
-    </div>
-
-    <script>
-        // --- 1. Verificador de IP ---
-        async function checkIP() {
-            const btn = document.getElementById('btn-ip');
-            const resultDisplay = document.getElementById('ip-result');
-            
-            // Estado de carregamento
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="loader"></span> Buscando...';
-            btn.disabled = true;
-            resultDisplay.innerText = '...';
-            resultDisplay.classList.add('text-gray-400');
-
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                if (!response.ok) throw new Error("Erro na rede");
-                const data = await response.json();
-                
-                resultDisplay.innerText = data.ip;
-                resultDisplay.classList.remove('text-gray-400');
-                resultDisplay.classList.add('text-blue-600');
-            } catch (error) {
-                resultDisplay.innerText = "Erro ao buscar IP";
-                resultDisplay.classList.remove('text-gray-400');
-                resultDisplay.classList.add('text-red-500');
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // --- 2. Teste de Velocidade ---
-        async function checkSpeed() {
-            const btn = document.getElementById('btn-speed');
-            const resultDisplay = document.getElementById('speed-result');
-            const statusDisplay = document.getElementById('speed-status');
-            
-            // Estado de carregamento
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="loader"></span> Testando...';
-            btn.disabled = true;
-            resultDisplay.innerHTML = '<span class="loader border-t-gray-500 w-8 h-8"></span>';
-            statusDisplay.innerText = 'Baixando arquivo de teste...';
-
-            // Usando uma imagem da Wikimedia Commons (geralmente tem bom suporte CORS e é rápida)
-            // Tamanho aproximado: ~2MB
-            const imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg';
-            const cacheBuster = '?t=' + new Date().getTime(); // Evita cache
-
-            try {
-                const startTime = Date.now();
-                
-                const response = await fetch(imageUrl + cacheBuster);
-                if (!response.ok) throw new Error("Erro no download");
-                
-                const blob = await response.blob();
-                
-                const endTime = Date.now();
-                const durationSeconds = (endTime - startTime) / 1000;
-                
-                // Tamanho em Bits
-                const sizeInBits = blob.size * 8;
-                // Megabits por segundo (Mbps)
-                const speedMbps = (sizeInBits / durationSeconds / (1024 * 1024)).toFixed(2);
-
-                resultDisplay.innerHTML = `${speedMbps} <span class="text-lg font-normal text-gray-500">Mbps</span>`;
-                statusDisplay.innerText = `Arquivo testado: ${(blob.size / 1024 / 1024).toFixed(2)} MB em ${durationSeconds.toFixed(2)}s`;
-                
-            } catch (error) {
-                resultDisplay.innerHTML = `<span class="text-red-500 text-xl">Falha no Teste</span>`;
-                statusDisplay.innerText = 'Ocorreu um erro ao baixar o arquivo. Verifique sua rede.';
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // --- 3. Teste de Webcam ---
-        let webcamStream = null;
-
-        async function startWebcam() {
-            const videoElement = document.getElementById('webcam-video');
-            const placeholder = document.getElementById('webcam-placeholder');
-            const errorText = document.getElementById('cam-error');
-            const btnStart = document.getElementById('btn-cam-start');
-            const btnStop = document.getElementById('btn-cam-stop');
-
-            errorText.classList.add('hidden');
-            btnStart.innerHTML = '<span class="loader"></span> Iniciando...';
-            btnStart.disabled = true;
-
-            try {
-                webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                videoElement.srcObject = webcamStream;
-                
-                placeholder.classList.add('hidden');
-                videoElement.classList.remove('hidden');
-                
-                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
-                btnStart.classList.add('hidden');
-                btnStop.disabled = false;
-                btnStop.classList.remove('bg-gray-200', 'text-gray-700');
-                btnStop.classList.add('bg-red-600', 'text-white', 'hover:bg-red-700');
-
-            } catch (error) {
-                errorText.innerText = "Erro: Permissão negada ou câmera não encontrada.";
-                errorText.classList.remove('hidden');
-                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
-                btnStart.disabled = false;
-            }
-        }
-
-        function stopWebcam() {
-            if (webcamStream) {
-                webcamStream.getTracks().forEach(track => track.stop());
-                webcamStream = null;
-            }
-            
-            document.getElementById('webcam-video').srcObject = null;
-            document.getElementById('webcam-video').classList.add('hidden');
-            document.getElementById('webcam-placeholder').classList.remove('hidden');
-            
-            const btnStart = document.getElementById('btn-cam-start');
-            const btnStop = document.getElementById('btn-cam-stop');
-            
-            btnStart.classList.remove('hidden');
-            btnStart.disabled = false;
-            
-            btnStop.disabled = true;
-            btnStop.classList.remove('bg-red-600', 'text-white', 'hover:bg-red-700');
-            btnStop.classList.add('bg-gray-200', 'text-gray-700');
-        }
-
-        // --- 4. Teste de Microfone ---
-        let micStream = null;
-        let audioContext = null;
-        let animationFrameId = null;
-
-        async function startMic() {
-            const canvas = document.getElementById('mic-canvas');
-            const placeholder = document.getElementById('mic-placeholder');
-            const errorText = document.getElementById('mic-error');
-            const btnStart = document.getElementById('btn-mic-start');
-            const btnStop = document.getElementById('btn-mic-stop');
-
-            errorText.classList.add('hidden');
-            btnStart.innerHTML = '<span class="loader"></span> Iniciando...';
-            btnStart.disabled = true;
-
-            try {
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                
-                placeholder.classList.add('hidden');
-                canvas.classList.remove('hidden');
-                
-                // Configuração do Web Audio API para visualizador
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const analyser = audioContext.createAnalyser();
-                const source = audioContext.createMediaStreamSource(micStream);
-                
-                source.connect(analyser);
-                analyser.fftSize = 256;
-                
-                const bufferLength = analyser.frequencyBinCount;
-                const dataArray = new Uint8Array(bufferLength);
-                const ctx = canvas.getContext('2d');
-                
-                // Ajustar tamanho do canvas
-                const resizeCanvas = () => {
-                    canvas.width = canvas.parentElement.clientWidth;
-                    canvas.height = canvas.parentElement.clientHeight;
-                };
-                window.addEventListener('resize', resizeCanvas);
-                resizeCanvas();
-
-                // Função de desenho (Visualizador)
-                function draw() {
-                    animationFrameId = requestAnimationFrame(draw);
-                    analyser.getByteFrequencyData(dataArray);
-
-                    ctx.fillStyle = 'rgb(17, 24, 39)'; // Tailwind gray-900
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    const barWidth = (canvas.width / bufferLength) * 2.5;
-                    let barHeight;
-                    let x = 0;
-
-                    for(let i = 0; i < bufferLength; i++) {
-                        barHeight = dataArray[i];
-                        
-                        // Gradiente laranja de acordo com a altura
-                        const r = barHeight + (25 * (i/bufferLength));
-                        const g = 150 * (i/bufferLength);
-                        const b = 50;
-
-                        ctx.fillStyle = `rgb(${r},${g},${b})`;
-                        ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
-
-                        x += barWidth + 1;
-                    }
-                }
-                
-                draw();
-
-                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
-                btnStart.classList.add('hidden');
-                btnStop.disabled = false;
-                btnStop.classList.remove('bg-gray-200', 'text-gray-700');
-                btnStop.classList.add('bg-red-600', 'text-white', 'hover:bg-red-700');
-
-            } catch (error) {
-                errorText.innerText = "Erro: Permissão negada ou microfone não encontrado.";
-                errorText.classList.remove('hidden');
-                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
-                btnStart.disabled = false;
-            }
-        }
-
-        function stopMic() {
-            if (micStream) {
-                micStream.getTracks().forEach(track => track.stop());
-                micStream = null;
-            }
-            if (audioContext) {
-                audioContext.close();
-                audioContext = null;
-            }
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-                animationFrameId = null;
-            }
-            
-            document.getElementById('mic-canvas').classList.add('hidden');
-            document.getElementById('mic-placeholder').classList.remove('hidden');
-            
-            const btnStart = document.getElementById('btn-mic-start');
-            const btnStop = document.getElementById('btn-mic-stop');
-            
-            btnStart.classList.remove('hidden');
-            btnStart.disabled = false;
-            
-            btnStop.disabled = true;
-            btnStop.classList.remove('bg-red-600', 'text-white', 'hover:bg-red-700');
-            btnStop.classList.add('bg-gray-200', 'text-gray-700');
-        }
-    </script>
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+<header class="w-full max-w-5xl bg-[#111827] border border-gray-800 rounded-xl px-4 py-3 flex flex-col sm:flex-row justify-between items-center shadow-lg mb-8 text-sm">
+<span class="font-medium text-gray-200">Site criado por <strong class="text-blue-400">RODRIGO ELBL</strong></span>
+<time id="c" class="text-gray-400 mt-2 sm:mt-0 font-mono"></time>
+</header>
+<main class="w-full max-w-5xl">
+<h1 class="text-3xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Dashboard de Dispositivos</h1>
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- IP -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Endereço IP</h2><p id="ip" class="text-gray-300 font-mono text-lg">Carregando...</p></div>
+<button onclick="lI()" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition">Atualizar IP</button>
+</article>
+<!-- NET -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-gauge-high text-green-400"></i> Velocidade e Rede</h2><p id="net" class="text-gray-300 font-mono text-sm mb-1">Testando latência...</p><p id="tipoNet" class="text-gray-400 text-xs">Tipo: Calculando...</p></div>
+<button onclick="tV()" class="mt-4 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition">Testar Velocidade</button>
+</article>
+<!-- WEBCAM -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-camera text-purple-400"></i> Teste de Webcam</h2>
+<div class="relative bg-black rounded-lg overflow-hidden h-40 flex items-center justify-center mt-2"><video id="cam" autoplay playsinline class="w-full h-full object-cover hidden"></video><span id="camMsg" class="text-gray-500 text-sm">Câmera desativada</span></div></div>
+<div class="flex gap-2 mt-4"><button onclick="tC()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium transition">Ligar</button><button onclick=" dC()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Desligar</button></div>
+</article>
+<!-- MIC -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-microphone text-yellow-400"></i> Teste de Microfone</h2><canvas id="micC" class="w-full h-24 bg-black rounded-lg mt-2"></canvas></div>
+<div class="flex gap-2 mt-4"><button onclick="tM()" class="flex-1 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium transition text-black font-semibold">Ouvir</button><button onclick="dM()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Parar</button></div>
+</article>
+<!-- AUDIO -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-music text-pink-400"></i> Teste de Áudio (Música)</h2><p class="text-gray-400 text-sm mb-2">Teste de saída de som instrumental clássico.</p>
+<audio id="aud" controls class="w-full mt-2" src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Beethoven_Moonlight_1st_movement.ogg"></audio></div>
+</article>
+<!-- HARDWARE -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-microchip text-cyan-400"></i> Hardware & Sistema</h2>
+<ul id="hw" class="text-gray-300 text-sm space-y-1 font-mono mt-2"><li>Carregando hardware...</li></ul></div>
+</article>
+<!-- BATTERY -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-battery-half text-amber-400"></i> Status da Bateria</h2><p id="bat" class="text-gray-300 font-mono text-sm mt-2">Verificando bateria...</p></div>
+</article>
+<!-- MOUSE -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-computer-mouse text-indigo-400"></i> Teste de Mouse</h2><div id="mTest" class="bg-black/40 border border-gray-700 h-24 rounded-lg flex items-center justify-center text-xs text-gray-400 select-none mt-2">Clique aqui e teste os botões ou o scroll</div></div>
+</article>
+<!-- KEYBOARD -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-keyboard text-rose-400"></i> Teste de Teclado</h2><p id="kTest" class="text-gray-300 text-sm font-mono mt-2">Pressione qualquer tecla...</p></div>
+</article>
+<!-- MEDIA -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-photo-film text-teal-400"></i> Dispositivos de Mídia</h2><ul id="medList" class="text-gray-300 text-xs font-mono space-y-1 mt-2"><li>Listando...</li></ul></div>
+</article>
+<!-- SENSORS -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-compass text-orange-400"></i> Sensores e Toque</h2><ul id="sens" class="text-gray-300 text-xs font-mono space-y-1 mt-2"><li>Analisando...</li></ul></div>
+</article>
+<!-- GEO -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-location-dot text-red-400"></i> Geolocalização</h2><p id="geo" class="text-gray-300 text-sm font-mono mt-2">Aguardando permissão...</p></div>
+<button onclick="tG()" class="mt-4 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Obter Localização</button>
+</article>
+</section>
+</main>
+<script>
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'))||(e.ctrlKey&&e.key==='u'))e.preventDefault();});
+setInterval(()=>{let d=new Date(),opt={weekday:'long',year:'numeric',month:'short',day:'numeric'};document.getElementById('c').innerText=d.toLocaleDateString('pt-BR',opt)+' - '+d.toLocaleTimeString();},1000);
+async function lI(){try{let r=await fetch('https://api.ipify.org?format=json'),j=await r.json();document.getElementById('ip').innerText=j.ip;}catch(e){document.getElementById('ip').innerText='Erro ao carregar IP';}}lI();
+async function tV(){let n=document.getElementById('net');n.innerText='Medindo latência e velocidade...';let s=performance.now();try{await fetch('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'});let l=Math.round(performance.now()-s);let st=navigator.connection?navigator.connection.downlink:'Desconhecido';n.innerHTML=`Latência: <b>${l} ms</b><br>Velocidade estimada: <b>${st} Mbps</b>`;}catch(e){n.innerText='Erro no teste de rede';}}tV();
+let stN=navigator.connection;if(stN){document.getElementById('tipoNet').innerText=`Tipo de Conexão (Rede): ${stN.effectiveType||'Desconhecido'} (${stN.type||'Padrão'})`;}
+let sCam=null;async function tC(){try{sCam=await navigator.mediaDevices.getUserMedia({video:true});let v=document.getElementById('cam');v.srcObject=sCam;v.classList.remove('hidden');document.getElementById('camMsg').classList.add('hidden');}catch(e){alert('Erro ao acessar webcam');}}function dC(){if(sCam){sCam.getTracks().forEach(t=>t.stop());let v=document.getElementById('cam');v.classList.add('hidden');document.getElementById('camMsg').classList.remove('hidden');}}
+let sMic=null,aCtx=null,analyser=null,animId=null;async function tM(){try{sMic=await navigator.mediaDevices.getUserMedia({audio:true});aCtx=new(window.AudioContext||window.webkitAudioContext)();let src=aCtx.createMediaStreamSource(sMic);analyser=aCtx.createAnalyser();analyser.fftSize=256;src.connect(analyser);let canvas=document.getElementById('micC'),ctx=canvas.getContext('2d'),bufLen=analyser.frequencyBinCount,dataA=new Uint8Array(bufLen);function draw(){animId=requestAnimationFrame(draw);analyser.getByteFrequencyData(dataA);ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);let w=(canvas.width/bufLen)*2.5,x=0;for(let i=0;i<bufLen;i++){let h=dataA[i]/2;ctx.fillStyle=`rgb(${h+100},150,255)`;ctx.fillRect(x,canvas.height-h,w,h);x+=w+1;}}draw();}catch(e){alert('Erro ao acessar microfone');}}function dM(){if(sMic){sMic.getTracks().forEach(t=>t.stop());cancelAnimationFrame(animId);if(aCtx)aCtx.close();let canvas=document.getElementById('micC'),ctx=canvas.getContext('2d');ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);}}
+function initHw(){let h=document.getElementById('hw'),nc=navigator.hardwareConcurrency||'N/D',dm=navigator.deviceMemory||'N/D',gl='N/D';try{let canvas=document.createElement('canvas'),glCtx=canvas.getContext('webgl')||canvas.getContext('experimental-webgl');if(glCtx){let dbg=glCtx.getExtension('WEBGL_debug_renderer_info');if(dbg)gl=glCtx.getParameter(dbg.UNMASKED_RENDERER_WEBGL);}}catch(e){}h.innerHTML=`<li>CPU Núcleos: <b>${nc}</b></li><li>RAM aprox: <b>${dm} GB</b></li><li>GPU: <span style="font-size:11px">${gl}</span></li><li>Placa Mãe: <span class="text-red-400">Bloqueada pelo Sistema</span></li>`;}initHw();
+function initBat(){if(navigator.getBattery){navigator.getBattery().then(b=>{let upd=()=>document.getElementById('bat').innerText=`Nível: ${Math.round(b.level*100)}% | Carregando: ${b.charging?'Sim':'Não'}`;upd();b.addEventListener('levelchange',upd);b.addEventListener('chargingchange',upd);});}else{document.getElementById('bat').innerText='API de Bateria não suportada';}}initBat();
+let mBox=document.getElementById('mTest');mBox.addEventListener('mousedown',e=>{mBox.innerText=`Botão ${e.button===0?'Esquerdo':e.button===1?'Meio':'Direito'} pressionado`;});mBox.addEventListener('wheel',e=>{mBox.innerText=`Scroll detectado: ${e.deltaY>0?'Para baixo':'Para cima'}`;});
+window.addEventListener('keydown',e=>{document.getElementById('kTest').innerText=`Tecla: ${e.key} (Código: ${e.code})`;});
+async function initMed(){try{let dev=await navigator.mediaDevices.enumerateDevices(),lst=document.getElementById('medList');lst.innerHTML='';dev.forEach(d=>{let li=document.createElement('li');li.innerText=`${d.kind}: ${d.label||'Desconhecido'}`;lst.appendChild(li);});}catch(e){}}initMed();
+function initSens(){let s=document.getElementById('sens'),t=navigator.maxTouchPoints>0?'Sim':'Não';s.innerHTML=`<li>Tela Touch: <b>${t} (${navigator.maxTouchPoints} pontos)</b></li><li>Orientação: <b>${screen.orientation?screen.orientation.type:'N/D'}</b></li>`;}initSens();
+function tG(){let g=document.getElementById('geo');if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{g.innerText=`Lat: ${p.coords.latitude.toFixed(2)} | Lon: ${p.coords.longitude.toFixed(2)}`;},()=>{g.innerText='Permissão negada ou indisponível';});}else{g.innerText='Geolocalização não suportada';}}
+</script>
 </body>
 </html>
