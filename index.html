@@ -18,19 +18,19 @@
 <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
 <!-- IP -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Endereço IP</h2><p id="ip" class="text-gray-300 font-mono text-lg">Carregando...</p></div>
-<button onclick="lI()" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition">Atualizar IP</button>
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Endereço IP</h2><p id="ip" class="text-gray-400 font-mono text-sm">Clique no botão para verificar o IP</p></div>
+<button onclick="lI()" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition">Verificar IP</button>
 </article>
 <!-- NET -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-gauge-high text-green-400"></i> Velocidade e Rede</h2><p id="net" class="text-gray-300 font-mono text-sm mb-1">Testando latência...</p><p id="tipoNet" class="text-gray-400 text-xs">Tipo: Calculando...</p></div>
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-gauge-high text-green-400"></i> Velocidade e Rede</h2><p id="net" class="text-gray-400 font-mono text-sm mb-1">Clique no botão para testar a rede</p><p id="tipoNet" class="text-gray-500 text-xs">Tipo: --</p></div>
 <button onclick="tV()" class="mt-4 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition">Testar Velocidade</button>
 </article>
 <!-- WEBCAM -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-camera text-purple-400"></i> Teste de Webcam</h2>
 <div class="relative bg-black rounded-lg overflow-hidden h-40 flex items-center justify-center mt-2"><video id="cam" autoplay playsinline class="w-full h-full object-cover hidden"></video><span id="camMsg" class="text-gray-500 text-sm">Câmera desativada</span></div></div>
-<div class="flex gap-2 mt-4"><button onclick="tC()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium transition">Ligar</button><button onclick=" dC()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Desligar</button></div>
+<div class="flex gap-2 mt-4"><button onclick="tC()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium transition">Ligar</button><button onclick="dC()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Desligar</button></div>
 </article>
 <!-- MIC -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
@@ -39,8 +39,8 @@
 </article>
 <!-- AUDIO -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-music text-pink-400"></i> Teste de Áudio (Música)</h2><p class="text-gray-400 text-sm mb-2">Teste de saída de som instrumental clássico.</p>
-<audio id="aud" controls class="w-full mt-2" src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Beethoven_Moonlight_1st_movement.ogg"></audio></div>
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-music text-pink-400"></i> Teste de Áudio</h2><p class="text-gray-400 text-sm mb-4">Clique no botão abaixo para testar a saída de som nas suas caixas de som ou fones de ouvido.</p></div>
+<button onclick="playAudioTest()" class="w-full bg-pink-600 hover:bg-pink-500 text-white px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2"><i class="fa-solid fa-volume-high"></i> Tocar Som de Teste</button>
 </article>
 <!-- HARDWARE -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
@@ -78,12 +78,42 @@
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'))||(e.ctrlKey&&e.key==='u'))e.preventDefault();});
 setInterval(()=>{let d=new Date(),opt={weekday:'long',year:'numeric',month:'short',day:'numeric'};document.getElementById('c').innerText=d.toLocaleDateString('pt-BR',opt)+' - '+d.toLocaleTimeString();},1000);
-async function lI(){try{let r=await fetch('https://api.ipify.org?format=json'),j=await r.json();document.getElementById('ip').innerText=j.ip;}catch(e){document.getElementById('ip').innerText='Erro ao carregar IP';}}lI();
-async function tV(){let n=document.getElementById('net');n.innerText='Medindo latência e velocidade...';let s=performance.now();try{await fetch('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'});let l=Math.round(performance.now()-s);let st=navigator.connection?navigator.connection.downlink:'Desconhecido';n.innerHTML=`Latência: <b>${l} ms</b><br>Velocidade estimada: <b>${st} Mbps</b>`;}catch(e){n.innerText='Erro no teste de rede';}}tV();
-let stN=navigator.connection;if(stN){document.getElementById('tipoNet').innerText=`Tipo de Conexão (Rede): ${stN.effectiveType||'Desconhecido'} (${stN.type||'Padrão'})`;}
+
+async function lI(){
+  document.getElementById('ip').innerText='A carregar IP...';
+  try{
+    let r=await fetch('https://api.ipify.org?format=json'),j=await r.json();
+    document.getElementById('ip').innerText=j.ip;
+    document.getElementById('ip').className="text-gray-300 font-mono text-lg";
+  }catch(e){
+    document.getElementById('ip').innerText='Erro ao carregar IP';
+  }
+}
+
+async function tV(){
+  let n=document.getElementById('net');
+  n.innerText='Medindo latência e velocidade...';
+  let s=performance.now();
+  try{
+    await fetch('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'});
+    let l=Math.round(performance.now()-s);
+    let st=navigator.connection?navigator.connection.downlink:'Desconhecido';
+    n.innerHTML=`Latência: <b>${l} ms</b><br>Velocidade estimada: <b>${st} Mbps</b>`;
+    let stN=navigator.connection;
+    if(stN){
+      document.getElementById('tipoNet').innerText=`Tipo de Conexão (Rede): ${stN.effectiveType||'Desconhecido'} (${stN.type||'Padrão'})`;
+    }
+  }catch(e){
+    n.innerText='Erro no teste de rede';
+  }
+}
+
 let sCam=null;async function tC(){try{sCam=await navigator.mediaDevices.getUserMedia({video:true});let v=document.getElementById('cam');v.srcObject=sCam;v.classList.remove('hidden');document.getElementById('camMsg').classList.add('hidden');}catch(e){alert('Erro ao acessar webcam');}}function dC(){if(sCam){sCam.getTracks().forEach(t=>t.stop());let v=document.getElementById('cam');v.classList.add('hidden');document.getElementById('camMsg').classList.remove('hidden');}}
 let sMic=null,aCtx=null,analyser=null,animId=null;async function tM(){try{sMic=await navigator.mediaDevices.getUserMedia({audio:true});aCtx=new(window.AudioContext||window.webkitAudioContext)();let src=aCtx.createMediaStreamSource(sMic);analyser=aCtx.createAnalyser();analyser.fftSize=256;src.connect(analyser);let canvas=document.getElementById('micC'),ctx=canvas.getContext('2d'),bufLen=analyser.frequencyBinCount,dataA=new Uint8Array(bufLen);function draw(){animId=requestAnimationFrame(draw);analyser.getByteFrequencyData(dataA);ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);let w=(canvas.width/bufLen)*2.5,x=0;for(let i=0;i<bufLen;i++){let h=dataA[i]/2;ctx.fillStyle=`rgb(${h+100},150,255)`;ctx.fillRect(x,canvas.height-h,w,h);x+=w+1;}}draw();}catch(e){alert('Erro ao acessar microfone');}}function dM(){if(sMic){sMic.getTracks().forEach(t=>t.stop());cancelAnimationFrame(animId);if(aCtx)aCtx.close();let canvas=document.getElementById('micC'),ctx=canvas.getContext('2d');ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);}}
-function initHw(){let h=document.getElementById('hw'),nc=navigator.hardwareConcurrency||'N/D',dm=navigator.deviceMemory||'N/D',gl='N/D';try{let canvas=document.createElement('canvas'),glCtx=canvas.getContext('webgl')||canvas.getContext('experimental-webgl');if(glCtx){let dbg=glCtx.getExtension('WEBGL_debug_renderer_info');if(dbg)gl=glCtx.getParameter(dbg.UNMASKED_RENDERER_WEBGL);}}catch(e){}h.innerHTML=`<li>CPU Núcleos: <b>${nc}</b></li><li>RAM aprox: <b>${dm} GB</b></li><li>GPU: <span style="font-size:11px">${gl}</span></li><li>Placa Mãe: <span class="text-red-400">Bloqueada pelo Sistema</span></li>`;}initHw();
+
+function playAudioTest(){try{let ctx=new(window.AudioContext||window.webkitAudioContext)();let osc=ctx.createOscillator();let gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(440,ctx.currentTime);gain.gain.setValueAtTime(0.1,ctx.currentTime);osc.connect(gain);gain.connect(ctx.destination);osc.start();setTimeout(()=>{osc.stop();ctx.close();},1000);}catch(e){alert('Erro ao reproduzir som de teste');}}
+
+function initHw(){let h=document.getElementById('hw'),nc=navigator.hardwareConcurrency||'N/D',dm=navigator.deviceMemory||'N/D',gl='N/D';try{let canvas=document.createElement('canvas'),glCtx=canvas.getContext('webgl')||canvas.getContext('experimental-webgl');if(glCtx){let dbg=glCtx.getExtension('WEBGL_debug_renderer_info');if(dbg)gl=glCtx.getParameter(dbg.UNMASKED_RENDERER_WEBGL);}}catch(e){}h.innerHTML=`<li>CPU Núcleos: <b>${nc}</b></li><li>RAM aprox: <b>${dm} GB</b></li><li>GPU: <span style="font-size:11px">${gl}</span></li>`;}initHw();
 function initBat(){if(navigator.getBattery){navigator.getBattery().then(b=>{let upd=()=>document.getElementById('bat').innerText=`Nível: ${Math.round(b.level*100)}% | Carregando: ${b.charging?'Sim':'Não'}`;upd();b.addEventListener('levelchange',upd);b.addEventListener('chargingchange',upd);});}else{document.getElementById('bat').innerText='API de Bateria não suportada';}}initBat();
 let mBox=document.getElementById('mTest');mBox.addEventListener('mousedown',e=>{mBox.innerText=`Botão ${e.button===0?'Esquerdo':e.button===1?'Meio':'Direito'} pressionado`;});mBox.addEventListener('wheel',e=>{mBox.innerText=`Scroll detectado: ${e.deltaY>0?'Para baixo':'Para cima'}`;});
 window.addEventListener('keydown',e=>{document.getElementById('kTest').innerText=`Tecla: ${e.key} (Código: ${e.code})`;});
