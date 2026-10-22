@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Diagnóstico de Sistema</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 1);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Animação de carregamento */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 20px;
+            height: 20px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        video {
+            transform: scaleX(-1); /* Espelha a webcam */
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col items-center py-10 px-4 sm:px-6 lg:px-8">
+
+    <div class="w-full max-w-5xl">
+        
+        <!-- Cabeçalho -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+                <i class="fa-solid fa-laptop-medical text-blue-600"></i>
+                Diagnóstico de Dispositivo
+            </h1>
+            <p class="text-gray-500 text-lg">Verifique sua conexão, câmera e microfone em um só lugar.</p>
+        </header>
+
+        <!-- Grid de Ferramentas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <!-- 1. Verificador de IP -->
+            <div class="glass-card p-6 flex flex-col h-full">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                        <i class="fa-solid fa-network-wired text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Endereço IP</h2>
+                </div>
+                <p class="text-gray-500 mb-6 flex-grow">Descubra seu endereço de IP público atual visível na internet.</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200 text-center min-h-[80px] flex items-center justify-center">
+                    <span id="ip-result" class="text-2xl font-bold text-gray-700 font-mono tracking-wider">0.0.0.0</span>
+                </div>
+                
+                <button onclick="checkIP()" id="btn-ip" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i> Testar Meu IP
+                </button>
+            </div>
+
+            <!-- 2. Teste de Velocidade -->
+            <div class="glass-card p-6 flex flex-col h-full">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-green-100 p-3 rounded-lg text-green-600">
+                        <i class="fa-solid fa-gauge-high text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Velocidade da Internet</h2>
+                </div>
+                <p class="text-gray-500 mb-6 flex-grow">Mede a velocidade de download baixando um arquivo de teste dinâmico.</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200 text-center min-h-[80px] flex items-center justify-center flex-col">
+                    <span id="speed-result" class="text-3xl font-bold text-gray-700">-- <span class="text-lg font-normal text-gray-500">Mbps</span></span>
+                    <span id="speed-status" class="text-sm text-gray-400 mt-1">Pronto para testar</span>
+                </div>
+                
+                <button onclick="checkSpeed()" id="btn-speed" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> Iniciar Teste de Velocidade
+                </button>
+            </div>
+
+            <!-- 3. Teste de Webcam -->
+            <div class="glass-card p-6 flex flex-col h-full">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                        <i class="fa-solid fa-video text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Webcam</h2>
+                </div>
+                <p class="text-gray-500 mb-4">Verifique a qualidade e o funcionamento da sua câmera.</p>
+                
+                <div class="bg-black rounded-lg overflow-hidden mb-6 relative aspect-video flex items-center justify-center flex-grow">
+                    <div id="webcam-placeholder" class="text-gray-500 flex flex-col items-center">
+                        <i class="fa-solid fa-camera mb-2 text-3xl"></i>
+                        <span>Câmera Desligada</span>
+                    </div>
+                    <video id="webcam-video" autoplay playsinline class="absolute inset-0 w-full h-full object-cover hidden"></video>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button onclick="startWebcam()" id="btn-cam-start" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-power-off"></i> Ligar
+                    </button>
+                    <button onclick="stopWebcam()" id="btn-cam-stop" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50" disabled>
+                        <i class="fa-solid fa-stop"></i> Parar
+                    </button>
+                </div>
+                <p id="cam-error" class="text-red-500 text-sm mt-2 hidden text-center"></p>
+            </div>
+
+            <!-- 4. Teste de Microfone -->
+            <div class="glass-card p-6 flex flex-col h-full">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-orange-100 p-3 rounded-lg text-orange-600">
+                        <i class="fa-solid fa-microphone-lines text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Microfone</h2>
+                </div>
+                <p class="text-gray-500 mb-4">Fale e visualize a captação de áudio em tempo real.</p>
+                
+                <div class="bg-gray-900 rounded-lg overflow-hidden mb-6 relative aspect-video flex items-center justify-center flex-grow p-4">
+                    <div id="mic-placeholder" class="text-gray-500 flex flex-col items-center absolute z-10">
+                        <i class="fa-solid fa-microphone-slash mb-2 text-3xl"></i>
+                        <span>Microfone Desligado</span>
+                    </div>
+                    <canvas id="mic-canvas" class="w-full h-full block hidden z-20"></canvas>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button onclick="startMic()" id="btn-mic-start" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-power-off"></i> Ligar
+                    </button>
+                    <button onclick="stopMic()" id="btn-mic-stop" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50" disabled>
+                        <i class="fa-solid fa-stop"></i> Parar
+                    </button>
+                </div>
+                <p id="mic-error" class="text-red-500 text-sm mt-2 hidden text-center"></p>
+            </div>
+
+        </div>
+        
+        <footer class="mt-12 text-center text-gray-400 text-sm">
+            <p>Os testes rodam localmente no seu navegador. Nenhuma mídia de vídeo ou áudio é gravada ou enviada para servidores.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- 1. Verificador de IP ---
+        async function checkIP() {
+            const btn = document.getElementById('btn-ip');
+            const resultDisplay = document.getElementById('ip-result');
+            
+            // Estado de carregamento
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loader"></span> Buscando...';
+            btn.disabled = true;
+            resultDisplay.innerText = '...';
+            resultDisplay.classList.add('text-gray-400');
+
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                if (!response.ok) throw new Error("Erro na rede");
+                const data = await response.json();
+                
+                resultDisplay.innerText = data.ip;
+                resultDisplay.classList.remove('text-gray-400');
+                resultDisplay.classList.add('text-blue-600');
+            } catch (error) {
+                resultDisplay.innerText = "Erro ao buscar IP";
+                resultDisplay.classList.remove('text-gray-400');
+                resultDisplay.classList.add('text-red-500');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // --- 2. Teste de Velocidade ---
+        async function checkSpeed() {
+            const btn = document.getElementById('btn-speed');
+            const resultDisplay = document.getElementById('speed-result');
+            const statusDisplay = document.getElementById('speed-status');
+            
+            // Estado de carregamento
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loader"></span> Testando...';
+            btn.disabled = true;
+            resultDisplay.innerHTML = '<span class="loader border-t-gray-500 w-8 h-8"></span>';
+            statusDisplay.innerText = 'Baixando arquivo de teste...';
+
+            // Usando uma imagem da Wikimedia Commons (geralmente tem bom suporte CORS e é rápida)
+            // Tamanho aproximado: ~2MB
+            const imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg';
+            const cacheBuster = '?t=' + new Date().getTime(); // Evita cache
+
+            try {
+                const startTime = Date.now();
+                
+                const response = await fetch(imageUrl + cacheBuster);
+                if (!response.ok) throw new Error("Erro no download");
+                
+                const blob = await response.blob();
+                
+                const endTime = Date.now();
+                const durationSeconds = (endTime - startTime) / 1000;
+                
+                // Tamanho em Bits
+                const sizeInBits = blob.size * 8;
+                // Megabits por segundo (Mbps)
+                const speedMbps = (sizeInBits / durationSeconds / (1024 * 1024)).toFixed(2);
+
+                resultDisplay.innerHTML = `${speedMbps} <span class="text-lg font-normal text-gray-500">Mbps</span>`;
+                statusDisplay.innerText = `Arquivo testado: ${(blob.size / 1024 / 1024).toFixed(2)} MB em ${durationSeconds.toFixed(2)}s`;
+                
+            } catch (error) {
+                resultDisplay.innerHTML = `<span class="text-red-500 text-xl">Falha no Teste</span>`;
+                statusDisplay.innerText = 'Ocorreu um erro ao baixar o arquivo. Verifique sua rede.';
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // --- 3. Teste de Webcam ---
+        let webcamStream = null;
+
+        async function startWebcam() {
+            const videoElement = document.getElementById('webcam-video');
+            const placeholder = document.getElementById('webcam-placeholder');
+            const errorText = document.getElementById('cam-error');
+            const btnStart = document.getElementById('btn-cam-start');
+            const btnStop = document.getElementById('btn-cam-stop');
+
+            errorText.classList.add('hidden');
+            btnStart.innerHTML = '<span class="loader"></span> Iniciando...';
+            btnStart.disabled = true;
+
+            try {
+                webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = webcamStream;
+                
+                placeholder.classList.add('hidden');
+                videoElement.classList.remove('hidden');
+                
+                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
+                btnStart.classList.add('hidden');
+                btnStop.disabled = false;
+                btnStop.classList.remove('bg-gray-200', 'text-gray-700');
+                btnStop.classList.add('bg-red-600', 'text-white', 'hover:bg-red-700');
+
+            } catch (error) {
+                errorText.innerText = "Erro: Permissão negada ou câmera não encontrada.";
+                errorText.classList.remove('hidden');
+                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
+                btnStart.disabled = false;
+            }
+        }
+
+        function stopWebcam() {
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+            
+            document.getElementById('webcam-video').srcObject = null;
+            document.getElementById('webcam-video').classList.add('hidden');
+            document.getElementById('webcam-placeholder').classList.remove('hidden');
+            
+            const btnStart = document.getElementById('btn-cam-start');
+            const btnStop = document.getElementById('btn-cam-stop');
+            
+            btnStart.classList.remove('hidden');
+            btnStart.disabled = false;
+            
+            btnStop.disabled = true;
+            btnStop.classList.remove('bg-red-600', 'text-white', 'hover:bg-red-700');
+            btnStop.classList.add('bg-gray-200', 'text-gray-700');
+        }
+
+        // --- 4. Teste de Microfone ---
+        let micStream = null;
+        let audioContext = null;
+        let animationFrameId = null;
+
+        async function startMic() {
+            const canvas = document.getElementById('mic-canvas');
+            const placeholder = document.getElementById('mic-placeholder');
+            const errorText = document.getElementById('mic-error');
+            const btnStart = document.getElementById('btn-mic-start');
+            const btnStop = document.getElementById('btn-mic-stop');
+
+            errorText.classList.add('hidden');
+            btnStart.innerHTML = '<span class="loader"></span> Iniciando...';
+            btnStart.disabled = true;
+
+            try {
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                
+                placeholder.classList.add('hidden');
+                canvas.classList.remove('hidden');
+                
+                // Configuração do Web Audio API para visualizador
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(micStream);
+                
+                source.connect(analyser);
+                analyser.fftSize = 256;
+                
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                const ctx = canvas.getContext('2d');
+                
+                // Ajustar tamanho do canvas
+                const resizeCanvas = () => {
+                    canvas.width = canvas.parentElement.clientWidth;
+                    canvas.height = canvas.parentElement.clientHeight;
+                };
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+
+                // Função de desenho (Visualizador)
+                function draw() {
+                    animationFrameId = requestAnimationFrame(draw);
+                    analyser.getByteFrequencyData(dataArray);
+
+                    ctx.fillStyle = 'rgb(17, 24, 39)'; // Tailwind gray-900
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    const barWidth = (canvas.width / bufferLength) * 2.5;
+                    let barHeight;
+                    let x = 0;
+
+                    for(let i = 0; i < bufferLength; i++) {
+                        barHeight = dataArray[i];
+                        
+                        // Gradiente laranja de acordo com a altura
+                        const r = barHeight + (25 * (i/bufferLength));
+                        const g = 150 * (i/bufferLength);
+                        const b = 50;
+
+                        ctx.fillStyle = `rgb(${r},${g},${b})`;
+                        ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+
+                        x += barWidth + 1;
+                    }
+                }
+                
+                draw();
+
+                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
+                btnStart.classList.add('hidden');
+                btnStop.disabled = false;
+                btnStop.classList.remove('bg-gray-200', 'text-gray-700');
+                btnStop.classList.add('bg-red-600', 'text-white', 'hover:bg-red-700');
+
+            } catch (error) {
+                errorText.innerText = "Erro: Permissão negada ou microfone não encontrado.";
+                errorText.classList.remove('hidden');
+                btnStart.innerHTML = '<i class="fa-solid fa-power-off"></i> Ligar';
+                btnStart.disabled = false;
+            }
+        }
+
+        function stopMic() {
+            if (micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+                micStream = null;
+            }
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            
+            document.getElementById('mic-canvas').classList.add('hidden');
+            document.getElementById('mic-placeholder').classList.remove('hidden');
+            
+            const btnStart = document.getElementById('btn-mic-start');
+            const btnStop = document.getElementById('btn-mic-stop');
+            
+            btnStart.classList.remove('hidden');
+            btnStart.disabled = false;
+            
+            btnStop.disabled = true;
+            btnStop.classList.remove('bg-red-600', 'text-white', 'hover:bg-red-700');
+            btnStop.classList.add('bg-gray-200', 'text-gray-700');
+        }
+    </script>
+</body>
+</html>
