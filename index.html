@@ -98,7 +98,7 @@ header .row button{flex:0 0 auto}
 .print-only { display: none; }
 
 @media print {
-  @page { size: A4; margin: 1.5cm; }
+  @page { size: A4; margin: 1.5cm 1.2cm; }
   :root { color-scheme: light; }
   body { background: #fff !important; color: #000 !important; padding: 0; font-size: 11pt; background-image: none !important; font-family: Arial, sans-serif; }
   
@@ -142,6 +142,28 @@ header .row button{flex:0 0 auto}
   .check-item select{appearance:none;-webkit-appearance:none;border:none;background:transparent;color:#000;font:bold 11pt Arial,sans-serif;padding:0;margin-left:auto}
   .check-item input[type="text"]::placeholder{color:transparent}
   .mut{color:#555 !important}
+  /* Compactação: 2 páginas (1: dados e rede | 2: resultados, inspeção e assinaturas) */
+  body{font-size:12pt;line-height:1.35}
+  section{padding-top:4px;margin-bottom:8px}
+  #laudo{break-before:page;page-break-before:always;padding-top:0}
+  h2{font-size:14pt;padding-bottom:3px;margin-bottom:10px;break-after:avoid}
+  h3{font-size:12.5pt;margin-bottom:4px;break-after:avoid}
+  .print-header{margin-bottom:16px;padding-bottom:12px}
+  .print-header h1{font-size:18pt;margin:0 0 10px}
+  .print-header p{margin:3px 0;font-size:12pt}
+  .card{padding:10px !important;margin-bottom:10px}
+  .read{gap:0 18px}
+  .read div{padding:4px 0}
+  .read dt{font-size:10pt}
+  .read dd,.kv dt,.kv dd{font-size:12pt}
+  .kv{gap:3px 14px}
+  .checklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+  .check-item{padding:5px 0;font-size:12pt}
+  .check-item select{font:bold 12pt Arial,sans-serif}
+  .check-item input[type="text"]{font-size:12pt}
+  .check-item input[type="checkbox"]{width:14px;height:14px;margin-right:6px}
+  .print-footer{margin-top:32px;break-inside:avoid}
+  .print-footer div{padding-top:6px;font-size:11pt}
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 </style>
