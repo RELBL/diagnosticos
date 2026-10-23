@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Diagnóstico de Sistema e Periféricos — Rodrigo Elbl</title>
 <meta name="description" content="Hardware, periféricos, tela e rede em um único painel, direto no navegador.">
+<meta name="theme-color" content="#2a3b50">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Diagnóstico de Sistema e Periféricos">
+<meta property="og:description" content="Hardware, periféricos, tela e rede em um único painel, direto no navegador.">
+<meta property="og:url" content="https://relbl.github.io/diagnosticos/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%96%A5%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <style>
 :root{--bg:#2a3b50;--panel:#364b64;--line:#4d647f;--text:#f1f5f9;--muted:#bac6d3;--accent:#ffb454;--ok:#7bd88f;color-scheme:dark}
 *{box-sizing:border-box;margin:0}
@@ -165,7 +171,7 @@ header .row button{flex:0 0 auto}
 </header>
 
 <nav aria-label="Seções" class="no-print">
-<a href="#resumo">Resumo</a><a href="#rede">Rede e localização</a><a href="#midia">Câmera e som</a><a href="#entrada">Teclado e mouse</a><a href="#tela">Tela</a><a href="#laudo">Laudo e inspeção</a>
+<a href="#resumo">Resumo</a><a href="#rede">Conectividade</a><a href="#midia">Câmera e som</a><a href="#entrada">Teclado e mouse</a><a href="#tela">Tela</a><a href="#laudo">Laudo e inspeção</a>
 </nav>
 
 <main>
@@ -184,9 +190,9 @@ header .row button{flex:0 0 auto}
 </dl></section>
 
 <section id="rede"><h2>Diagnóstico de Conectividade</h2><div class="grid">
-<article class="card"><h3>Endereço IP e Rota</h3><p class="hint">Mostra seu IP público e a região que o provedor informa.</p>
+<article class="card"><h3>Endereço IP</h3><p class="hint">Mostra seu IP público e a região que o provedor informa.</p>
 <div class="out" id="ipOut" aria-live="polite"><p class="mut">Teste não executado.</p></div><button class="pri no-print" onclick="ip(this)">Testar Conexão / Obter IP</button></article>
-<article class="card"><h3>Desempenho de Banda (Velocidade)</h3><p class="hint">Mede a latência e baixa um arquivo de teste via GitHub (CORS livre). Leva alguns segundos.</p>
+<article class="card"><h3>Desempenho de Banda (Velocidade)</h3><p class="hint">Mede a latência e baixa um arquivo de teste. Leva alguns segundos.</p>
 <div class="out" id="netOut" aria-live="polite"><p class="mut">Teste não executado.</p></div><button class="pri no-print" onclick="speed(this)">Medir Latência e Download</button></article>
 </div></section>
 
@@ -221,15 +227,15 @@ header .row button{flex:0 0 auto}
 </div></section>
 
 <section id="laudo"><h2>Resultados e Inspeção Física</h2>
-<article class="card no-print test-card"><h3>Dados do laudo</h3><p class="hint" style="margin-top:0">Preenchimento obrigatório para gerar relatório ou PDF.</p><div class="fields"><label>Equipamento / Modelo <span style="color:var(--accent)">*</span><input type="text" id="fEquip" placeholder="Ex: Notebook Dell Inspiron" required></label><label>Ordem de Serviço (O.S.) <span style="color:var(--accent)">*</span><input type="text" id="fOS" placeholder="Ex: OS-2023-1045" required></label><label>Cliente / Setor<input type="text" id="fCli"></label></div></article>
-<article class="card test-card"><h3>Resultado dos testes</h3><p class="hint">Os testes que executar são marcados como "OK" automaticamente. Ajuste manualmente se necessário.</p><div class="checklist-grid">
-<label class="check-item">Câmera<select id="rCam"><option value="Não testado">Não testado</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
-<label class="check-item">Microfone<select id="rMic"><option value="Não testado">Não testado</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
-<label class="check-item">Som estéreo<select id="rSom"><option value="Não testado">Não testado</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
-<label class="check-item">Mouse / touchpad<select id="rMouse"><option value="Não testado">Não testado</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
-<label class="check-item">Teclado<select id="rTec"><option value="Não testado">Não testado</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
-<label class="check-item">Tela (pixels e cores)<select id="rTela"><option value="Não testado">Não testado</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
-<label class="check-item">Taxa de quadros (FPS)<select id="rFps"><option value="Não testado">Não testado</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
+<article class="card no-print test-card"><h3>Dados do laudo</h3><p class="hint" style="margin-top:0">Obrigatório para usar os botões Imprimir e Exportar. Pelo atalho Ctrl+P, os campos vazios saem em branco para preencher à mão.</p><p class="hint" id="formMsg" role="alert" hidden style="color:var(--accent);font-weight:600"></p><div class="fields"><label>Equipamento / Modelo <span style="color:var(--accent)">*</span><input type="text" id="fEquip" placeholder="Ex: Notebook Dell Inspiron"></label><label>Ordem de Serviço (O.S.) <span style="color:var(--accent)">*</span><input type="text" id="fOS" placeholder="Ex: OS-1045"></label><label>Cliente / Setor<input type="text" id="fCli"></label></div></article>
+<article class="card test-card"><h3>Resultado dos testes</h3><p class="hint">Os testes executados ficam como “Executado — avaliar”. Depois de conferir o resultado, escolha OK ou Falhou.</p><div class="checklist-grid">
+<label class="check-item">Câmera<select id="rCam"><option value="Não testado">Não testado</option><option value="Executado — avaliar">Executado — avaliar</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
+<label class="check-item">Microfone<select id="rMic"><option value="Não testado">Não testado</option><option value="Executado — avaliar">Executado — avaliar</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
+<label class="check-item">Som estéreo<select id="rSom"><option value="Não testado">Não testado</option><option value="Executado — avaliar">Executado — avaliar</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
+<label class="check-item">Mouse / touchpad<select id="rMouse"><option value="Não testado">Não testado</option><option value="Executado — avaliar">Executado — avaliar</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
+<label class="check-item">Teclado<select id="rTec"><option value="Não testado">Não testado</option><option value="Executado — avaliar">Executado — avaliar</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
+<label class="check-item">Tela (pixels e cores)<select id="rTela"><option value="Não testado">Não testado</option><option value="Executado — avaliar">Executado — avaliar</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
+<label class="check-item">Taxa de quadros (FPS)<select id="rFps"><option value="Não testado">Não testado</option><option value="Executado — avaliar">Executado — avaliar</option><option value="OK">OK</option><option value="Falhou">Falhou</option></select></label>
 </div></article>
 <h3 style="margin:8px 0 12px">Inspeção física</h3>
 <article class="card" style="border: none !important; padding: 0 !important;">
@@ -275,23 +281,18 @@ function log(m){const t=$('log'),d=document.createElement('div');d.textContent=`
 function clearLog(){$('log').replaceChildren();log('Registro limpo.')}
 
 // Helper para automatizar os resultados
-const setStatus = (id, st) => { if($(id).value === 'Não testado') $(id).value = st; };
+const PEND='Executado — avaliar';
+const setStatus=(id,st)=>{if($(id).value==='Não testado')$(id).value=st};
+const failStatus=(id,e)=>{if(['NotFoundError','DevicesNotFoundError'].includes(e?.name))setStatus(id,'Falhou')};
 
 // 1. Validação Obrigatória
-function validateRequiredFields() {
-  const equip = $('fEquip').value.trim();
-  const os = $('fOS').value.trim();
-  if (!equip) {
-    alert("ERRO: O campo 'Equipamento / Modelo' é obrigatório para gerar o laudo.");
-    $('fEquip').focus();
-    return false;
-  }
-  if (!os) {
-    alert("ERRO: O campo 'Ordem de Serviço (O.S.)' é obrigatório para gerar o laudo.");
-    $('fOS').focus();
-    return false;
-  }
-  return true;
+function validateRequiredFields(){
+  const msg=$('formMsg'),miss=[['fEquip','Equipamento / Modelo'],['fOS','Ordem de Serviço (O.S.)']].find(([i])=>!$(i).value.trim());
+  const pend=['rCam','rMic','rSom','rMouse','rTec','rTela','rFps'].some(i=>$(i).value===PEND);
+  const t=miss?`Preencha “${miss[1]}” para continuar.`:pend?'Há testes executados sem avaliação. Escolha OK ou Falhou em cada um antes de imprimir ou exportar.':'';
+  msg.textContent=t;msg.hidden=!t;
+  if(miss)$(miss[0]).focus();else if(t)msg.scrollIntoView({block:'center'});
+  return !t;
 }
 
 function triggerPrint() {
@@ -335,7 +336,7 @@ function exportReport(){
     inspecaoFisica:{...pick({carcaca:'chkCarcaca',tela:'chkTela',teclado:'chkTeclado',portas:'chkPortas',dobradica:'chkDobradica',bateria:'chkBateria',carregador:'chkCarregador',cooler:'chkCooler'},e=>e.checked),observacoes:$('chkObs').value},
     medicoes:results,sessionLog:Array.from($('log').children,d=>d.textContent)};
   const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download=`laudo-${$('fOS').value.trim()||Date.now()}.json`;document.body.append(a);a.click();a.remove();
+  a.href=url;a.download=`laudo-${$('fOS').value.trim().replace(/[^\w.-]+/g,'_')||Date.now()}.json`;document.body.append(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);log('Laudo JSON exportado.');
 }
 const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'});
@@ -353,7 +354,7 @@ tick();setInterval(tick,1000);
   s('dCpu',nc?nc+' núcleos lógicos':NI);s('dRam',dm?(dm>=8?'8 GB ou mais (limite do navegador)':dm+' GB (aproximado)'):NI);s('dGpu',gpu);
   const Q={'slow-2g':'Muito lenta','2g':'Muito lenta','3g':'Lenta','4g':'Boa'};
   s('dQual',c&&Q[c.effectiveType]||NI);
-  s('dTouch',navigator.maxTouchPoints>0?'Sim ('+navigator.maxTouchPoints+' pontos multi-touch)':'Não suportado/Detectado');
+  s('dTouch',navigator.maxTouchPoints>0?'Sim ('+navigator.maxTouchPoints+(navigator.maxTouchPoints>1?' pontos simultâneos)':' ponto)'):'Não detectado');
   const ori=()=>{const o=screen.orientation?.type||'';s('dOri',o.startsWith('portrait')?'Retrato (Vertical)':o.startsWith('landscape')?'Paisagem (Horizontal)':NI)};
   ori();screen.orientation?.addEventListener('change',ori);
   if(navigator.getBattery)navigator.getBattery().then(b=>{const u=()=>s('dBat',Math.round(b.level*100)+'%'+(b.charging?' (carregando)':''));u();b.onlevelchange=b.onchargingchange=u}).catch(()=>s('dBat',NI));
@@ -374,29 +375,21 @@ async function ip(b){
   }finally{b.disabled=false}
 }
 
-// 2. Teste de banda com mitigação CORS
 async function speed(b){
-  const o=$('netOut');b.disabled=true;o.innerHTML='<p>Medindo através de arquivo via GitHub (CORS livre)…</p>';log('Teste de banda iniciado.');
+  const o=$('netOut');b.disabled=true;o.innerHTML='<p>Medindo… leva alguns segundos.</p>';log('Teste de velocidade iniciado.');
   try{
     let t=performance.now();
-    await fetchWithTimeout('https://cloudflare.com/cdn-cgi/trace',{cache:'no-store'},12000);
+    await fetchWithTimeout('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'},12000);
     const ms=Math.round(performance.now()-t);
     t=performance.now();
-    
-    // O GitHubusercontent tem cabeçalhos Access-Control-Allow-Origin '*' totalmente libertados
-    const response=await fetchWithTimeout('https://raw.githubusercontent.com/relbl/diagnosticos/main/README.md?dummy='+Date.now(),{cache:'no-store'},15000);
-    
-    // Fallback secundário (Imagem da Wikimedia, também CORS-free) caso o GitHub falhe
-    const responseImg=await fetchWithTimeout('https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?'+Date.now(),{cache:'no-store'},25000);
-    
-    const blob=await responseImg.blob(),elapsed=(performance.now()-t)/1000;
-    if(!blob.size||elapsed<=0)throw new Error('Pacote vazio ou erro de CORS');
-    
+    const blob=await(await fetchWithTimeout('https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?'+Date.now(),{cache:'no-store'},25000)).blob();
+    const elapsed=(performance.now()-t)/1000;
+    if(!blob.size||elapsed<=0)throw new Error('Resposta vazia');
     const mbps=blob.size*8/elapsed/1e6;
     o.innerHTML=kv([['Ping Estimado HTTP',ms+' ms'],['Taxa de Download Constatada',mbps.toFixed(2)+' Mbps'],['Carga Transferida',(blob.size/1024/1024).toFixed(2)+' MB']]);
     saveResult('rede_banda','sucesso',{ping:ms,down:mbps.toFixed(2)});log(`Banda aferida: ${mbps.toFixed(1)} Mbps.`);
   }catch(e){
-    o.innerHTML='<p style="color:var(--accent)">Ocorreu um erro no teste de rede (Possível bloqueio de CORS ou timeout). Verifique a conexão.</p>';
+    o.innerHTML='<p style="color:var(--accent)">Não foi possível medir a velocidade. Verifique a conexão e tente de novo.</p>';
     saveResult('rede_banda','falha',{erro:e.message});log('Falha no teste de velocidade.');
   }finally{b.disabled=false}
 }
@@ -417,11 +410,11 @@ async function camOn(){
     cam=await navigator.mediaDevices.getUserMedia({video:true});
     $('cam').srcObject=cam;$('cam').hidden=false;$('camMsg').hidden=true;
     saveResult('camera','ligada');log('Câmera ligada.');devs();
-    setStatus('rCam', 'OK'); // 3. Automação
+    setStatus('rCam',PEND);
   }catch(e){
     $('camMsg').hidden=false;$('camMsg').textContent=mediaErrorMessage(e,'câmera');
     saveResult('camera','erro',{motivo:e.name||'erro'});log('Falha ao acessar a câmera.');
-    setStatus('rCam', 'Falhou');
+    failStatus('rCam',e);
   }finally{camBusy=false}
 }
 function camOff(){
@@ -450,12 +443,12 @@ async function micOn(){
     (function draw(){if(!mic)return;raf=requestAnimationFrame(draw);an.getByteFrequencyData(d);
       x.clearRect(0,0,c.width,c.height);x.fillStyle='#ffb454';d.forEach((v,i)=>{const h=v/255*c.height;x.fillRect(i*w,c.height-h,Math.max(1,w-1),h)})})();
     saveResult('microfone','ligado');log('Microfone ativado.');devs();
-    setStatus('rMic', 'OK'); // 3. Automação
+    setStatus('rMic',PEND);
   }catch(e){
     if(st)st.getTracks().forEach(t=>t.stop());
     stopMic();$('micMsg').hidden=false;$('micMsg').textContent=mediaErrorMessage(e,'microfone');
     saveResult('microfone','erro',{motivo:e.name||'erro'});log('Falha ao acessar o microfone.');
-    setStatus('rMic', 'Falhou');
+    failStatus('rMic',e);
   }finally{micBusy=false}
 }
 function micOff(){stopMic();$('micMsg').hidden=false;$('micMsg').textContent='Microfone parado.';log('Microfone parado.')}
@@ -473,9 +466,9 @@ function tone(){
     });
     tt=setTimeout(()=>{if(tc===a)tc=null;if(a.state!=='closed')a.close().catch(()=>{})},2800);
     o.textContent='Tocando a melodia, da esquerda para a direita…';saveResult('som','executado');log('Som de teste tocado (estéreo).');
-    setStatus('rSom', 'OK'); // 3. Automação
+    setStatus('rSom',PEND);
     setTimeout(()=>{if(o.textContent.startsWith('Tocando'))o.textContent='Não ouviu? Confira o volume e a saída de áudio. Se ouviu só de um lado, verifique o fone ou a caixa.'},2200);
-  }catch{o.textContent='Não foi possível reproduzir o som neste navegador.';saveResult('som','erro');log('Falha no teste de som.'); setStatus('rSom', 'Falhou');}
+  }catch{o.textContent='Não foi possível reproduzir o som neste navegador.';saveResult('som','erro');log('Falha no teste de som.');}
 }
 let listing=false;
 async function devs(){
@@ -490,8 +483,8 @@ async function devs(){
 devs();navigator.mediaDevices?.addEventListener?.('devicechange',devs);
 
 const mb=$('mouse');
-mb.addEventListener('mousedown',e=>{const n=['esquerdo','do meio','direito','voltar','avançar'][e.button]||e.button;mb.textContent=`Botão ${n} pressionado`;log(`Mouse: botão ${n}.`); setStatus('rMouse', 'OK');});
-mb.addEventListener('wheel',e=>{mb.textContent='Rodinha: '+(e.deltaY>0?'para baixo':'para cima'); setStatus('rMouse', 'OK');},{passive:true});
+mb.addEventListener('mousedown',e=>{const n=['esquerdo','do meio','direito','voltar','avançar'][e.button]||e.button;mb.textContent=`Botão ${n} pressionado`;log(`Mouse: botão ${n}.`); setStatus('rMouse',PEND);});
+mb.addEventListener('wheel',e=>{mb.textContent='Rodinha: '+(e.deltaY>0?'para baixo':'para cima'); setStatus('rMouse',PEND);},{passive:true});
 mb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();mb.textContent='Entrada de teclado detectada na área do mouse.'}});
 
 document.addEventListener('contextmenu',e=>e.preventDefault());
@@ -502,14 +495,14 @@ document.addEventListener('keydown',e=>{
   if(document.activeElement===$('key')){
     if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();
     $('key').innerHTML=`<div><div class="big">${esc(e.key===' '?'Espaço':e.key)}</div><div class="hint">Código: ${esc(e.code)}</div></div>`;
-    setStatus('rTec', 'OK'); // 3. Automação
+    setStatus('rTec',PEND);
   }
 });
 
 function scr(c){
   const o=$('ov');o.style.background=c;o.hidden=false;o.focus();
   if(o.requestFullscreen)o.requestFullscreen().catch(()=>{});saveResult('tela','executado',{cor:c});log(`Teste de tela: ${c}.`);
-  setStatus('rTela', 'OK'); // 3. Automação
+  setStatus('rTela',PEND);
 }
 function scrEnd(){$('ov').hidden=true;if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});log('Teste de tela encerrado.')}
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&!$('ov').hidden)scrEnd()});
@@ -519,7 +512,7 @@ function fps(b){
   const n=$('fpsN'),st=$('fpsSt');
   if(fr){fr=false;cancelAnimationFrame(fid);b.textContent='Iniciar monitor de quadros';b.className='pri';n.textContent='--';st.textContent='Monitor parado.';log('Monitor de FPS parado.');return}
   fr=true;b.textContent='Interromper monitor';b.className='';st.textContent='Medindo…';saveResult('fps','executado');log('Monitor de FPS iniciado.');
-  setStatus('rFps', 'OK'); // 3. Automação
+  setStatus('rFps',PEND);
   let t=performance.now(),f=0;
   (function loop(now){
     if(!fr)return;f++;
