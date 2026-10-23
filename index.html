@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Dispositivos</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>body{background-color:#0b0f19;color:#f3f4f6;font-family:system-ui,-apple-system,sans-serif}button{cursor:pointer}</style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+<header class="w-full max-w-5xl bg-[#111827] border border-gray-800 rounded-xl px-4 py-3 flex flex-col sm:flex-row justify-between items-center shadow-lg mb-8 text-sm">
+<span class="font-medium text-gray-200">Site criado por <strong class="text-blue-400">RODRIGO ELBL</strong></span>
+<time id="c" class="text-gray-400 mt-2 sm:mt-0 font-mono"></time>
+</header>
+<main class="w-full max-w-5xl">
+<h1 class="text-3xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Dashboard de Dispositivos</h1>
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+<!-- ENDEREÇO IP (SEPARADO) -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div>
+<h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Endereço IP</h2>
+<p id="ip" class="text-gray-400 font-mono text-sm">Clique no botão para verificar</p>
+<div class="mt-3 space-y-1 text-xs font-mono text-gray-300" id="ipDetails">
+<div>País: <span class="text-gray-500">--</span></div>
+<div>Cidade: <span class="text-gray-500">--</span></div>
+<div>Provedor: <span class="text-gray-500">--</span></div>
+<div>Dispositivo: <span class="text-gray-500">--</span></div>
+<div>Navegador: <span class="text-gray-500">--</span></div>
+<div>Sistema Operacional: <span class="text-gray-500">--</span></div>
+</div>
+</div>
+<button onclick="lI()" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition text-sm">Verificar IP e Detalhes</button>
+</article>
+
+<!-- VELOCIDADE E REDE (SEPARADO) -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div>
+<h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-gauge-high text-green-400"></i> Velocidade e Conexão</h2>
+<p id="net" class="text-gray-400 font-mono text-sm mb-1">Clique no botão para testar</p>
+<p id="tipoNet" class="text-xs font-mono text-gray-400 mt-2">Tipo de Conexão: --</p>
+</div>
+<button onclick="tV()" class="mt-4 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition text-sm">Testar Velocidade e Rede</button>
+</article>
+
+<!-- WEBCAM -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-camera text-purple-400"></i> Teste de Webcam</h2>
+<div class="relative bg-black rounded-lg overflow-hidden h-40 flex items-center justify-center mt-2"><video id="cam" autoplay playsinline class="w-full h-full object-cover hidden"></video><span id="camMsg" class="text-gray-500 text-sm">Câmera desativada</span></div></div>
+<div class="flex gap-2 mt-4"><button onclick="tC()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium transition">Ligar</button><button onclick="dC()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Desligar</button></div>
+</article>
+
+<!-- MIC -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-microphone text-yellow-400"></i> Teste de Microfone</h2><canvas id="micC" class="w-full h-24 bg-black rounded-lg mt-2"></canvas></div>
+<div class="flex gap-2 mt-4"><button onclick="tM()" class="flex-1 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium transition text-black font-semibold">Ouvir</button><button onclick="dM()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Parar</button></div>
+</article>
+
+<!-- AUDIO -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-music text-pink-400"></i> Teste de Áudio</h2><p class="text-gray-400 text-sm mb-4">Clique no botão abaixo para testar a saída de som nas suas caixas de som ou fones de ouvido.</p></div>
+<button onclick="playAudioTest()" class="w-full bg-pink-600 hover:bg-pink-500 text-white px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2"><i class="fa-solid fa-volume-high"></i> Tocar Som de Teste</button>
+</article>
+
+<!-- HARDWARE -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-microchip text-cyan-400"></i> Hardware & Sistema</h2>
+<ul id="hw" class="text-gray-300 text-sm space-y-1 font-mono mt-2"><li>Carregando hardware...</li></ul></div>
+</article>
+
+<!-- BATTERY -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-battery-half text-amber-400"></i> Status da Bateria</h2><p id="bat" class="text-gray-300 font-mono text-sm mt-2">Verificando bateria...</p></div>
+</article>
+
+<!-- MOUSE -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-computer-mouse text-indigo-400"></i> Teste de Mouse</h2><div id="mTest" class="bg-black/40 border border-gray-700 h-24 rounded-lg flex items-center justify-center text-xs text-gray-400 select-none mt-2">Clique aqui e teste os botões ou o scroll</div></div>
+</article>
+
+<!-- KEYBOARD -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-keyboard text-rose-400"></i> Teste de Teclado</h2><p id="kTest" class="text-gray-300 text-sm font-mono mt-2">Pressione qualquer tecla...</p></div>
+</article>
+
+<!-- MEDIA -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-photo-film text-teal-400"></i> Dispositivos de Mídia</h2><ul id="medList" class="text-gray-300 text-xs font-mono space-y-1 mt-2"><li>Listando...</li></ul></div>
+</article>
+
+<!-- SENSORS -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-compass text-orange-400"></i> Sensores e Toque</h2><ul id="sens" class="text-gray-300 text-xs font-mono space-y-1 mt-2"><li>Analisando...</li></ul></div>
+</article>
+
+<!-- GEO -->
+<article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-location-dot text-red-400"></i> Geolocalização</h2><p id="geo" class="text-gray-300 text-sm font-mono mt-2">Aguardando permissão...</p></div>
+<button onclick="tG()" class="mt-4 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Obter Localização</button>
+</article>
+
+</section>
+</main>
+<script>
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'))||(e.ctrlKey&&e.key==='u'))e.preventDefault();});
+setInterval(()=>{let d=new Date(),opt={weekday:'long',year:'numeric',month:'short',day:'numeric'};document.getElementById('c').innerText=d.toLocaleDateString('pt-BR',opt)+' - '+d.toLocaleTimeString();},1000);
+
+async function lI(){
+  document.getElementById('ip').innerText='A carregar IP...';
+  try{
+    let r=await fetch('https://ipapi.co/json/');
+    let j=await r.json();
+    document.getElementById('ip').innerText=j.ip || 'Indisponível';
+    document.getElementById('ip').className="text-gray-200 font-mono text-sm font-bold";
+    
+    let ua = navigator.userAgent;
+    let browser = "Desconhecido";
+    if(ua.includes("Firefox")) browser = "Mozilla Firefox";
+    else if(ua.includes("SamsungBrowser")) browser = "Samsung Internet";
+    else if(ua.includes("Opera") || ua.includes("OPR")) browser = "Opera";
+    else if(ua.includes("Trident")) browser = "Internet Explorer";
+    else if(ua.includes("Edge")) browser = "Microsoft Edge";
+    else if(ua.includes("Chrome")) browser = "Google Chrome";
+    else if(ua.includes("Safari")) browser = "Apple Safari";
+
+    let os = "Desconhecido";
+    if(ua.includes("Win")) os = "Windows";
+    else if(ua.includes("Android")) os = "Android";
+    else if(ua.includes("like Mac")) os = "iOS (iPhone/iPad)";
+    else if(ua.includes("Mac")) os = "MacOS";
+    else if(ua.includes("Linux")) os = "Linux";
+
+    let deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Dispositivo Móvel" : "Computador (Desktop)";
+
+    document.getElementById('ipDetails').innerHTML=`
+      <div>País: <span class="text-white">${j.country_name || 'N/D'}</span></div>
+      <div>Cidade: <span class="text-white">${j.city || 'N/D'}</span></div>
+      <div>Provedor: <span class="text-white">${j.org || 'N/D'}</span></div>
+      <div>Dispositivo: <span class="text-white">${deviceType}</span></div>
+      <div>Navegador: <span class="text-white">${browser}</span></div>
+      <div>Sistema Operacional: <span class="text-white">${os}</span></div>
+    `;
+  }catch(e){
+    document.getElementById('ip').innerText='Erro ao carregar dados de IP';
+  }
+}
+
+async function tV(){
+  let n=document.getElementById('net');
+  n.innerText='A medir velocidade real...';
+  
+  let s=performance.now();
+  try{
+    await fetch('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'});
+    let l=Math.round(performance.now()-s);
+
+    let imageSizeB = 3000000; // ~3MB
+    let startTime = performance.now();
+    let response = await fetch('https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?' + Math.random(), {cache: 'no-store'});
+    let blob = await response.blob();
+    let endTime = performance.now();
+    
+    let durationSec = (endTime - startTime) / 1000;
+    let bitsLoaded = blob.size * 8;
+    let speedBps = bitsLoaded / durationSec;
+    let speedMbps = speedBps / (1024 * 1024);
+
+    n.innerHTML=`Latência: <b>${l} ms</b><br>Velocidade Real: <b class="text-green-400">${speedMbps.toFixed(2)} Mbps</b>`;
+    n.className="text-gray-200 font-mono text-sm";
+
+    let conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    let connType = conn && conn.effectiveType ? conn.effectiveType.toUpperCase() : 'Banda Larga / Wi-Fi';
+    let connMedium = conn && conn.type ? conn.type : 'Ethernet / Alta Velocidade';
+    document.getElementById('tipoNet').innerHTML=`Tipo de Conexão (Rede): <b class="text-white">${connType} (${connMedium})</b>`;
+  }catch(e){
+    n.innerText='Erro no teste de velocidade';
+  }
+}
+
+let sCam=null;async function tC(){try{sCam=await navigator.mediaDevices.getUserMedia({video:true});let v=document.getElementById('cam');v.srcObject=sCam;v.classList.remove('hidden');document.getElementById('camMsg').classList.add('hidden');}catch(e){alert('Erro ao acessar webcam');}}function dC(){if(sCam){sCam.getTracks().forEach(t=>t.stop());let v=document.getElementById('cam');v.classList.add('hidden');document.getElementById('camMsg').classList.remove('hidden');}}
+let sMic=null,aCtx=null,analyser=null,animId=null;async function tM(){try{sMic=await navigator.mediaDevices.getUserMedia({audio:true});aCtx=new(window.AudioContext||window.webkitAudioContext)();let src=aCtx.createMediaStreamSource(sMic);analyser=aCtx.createAnalyser();analyser.fftSize=256;src.connect(analyser);let canvas=document.getElementById('micC'),ctx=canvas.getContext('2d'),bufLen=analyser.frequencyBinCount,dataA=new Uint8Array(bufLen);function draw(){animId=requestAnimationFrame(draw);analyser.getByteFrequencyData(dataA);ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);let w=(canvas.width/bufLen)*2.5,x=0;for(let i=0;i<bufLen;i++){let h=dataA[i]/2;ctx.fillStyle=`rgb(${h+100},150,255)`;ctx.fillRect(x,canvas.height-h,w,h);x+=w+1;}}draw();}catch(e){alert('Erro ao acessar microfone');}}function dM(){if(sMic){sMic.getTracks().forEach(t=>t.stop());cancelAnimationFrame(animId);if(aCtx)aCtx.close();let canvas=document.getElementById('micC'),ctx=canvas.getContext('2d');ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);}}
+
+function playAudioTest(){try{let ctx=new(window.AudioContext||window.webkitAudioContext)();let osc=ctx.createOscillator();let gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(440,ctx.currentTime);gain.gain.setValueAtTime(0.1,ctx.currentTime);osc.connect(gain);gain.connect(ctx.destination);osc.start();setTimeout(()=>{osc.stop();ctx.close();},1000);}catch(e){alert('Erro ao reproduzir som de teste');}}
+
+function initHw(){let h=document.getElementById('hw'),nc=navigator.hardwareConcurrency||'N/D',dm=navigator.deviceMemory||'N/D',gl='N/D';try{let canvas=document.createElement('canvas'),glCtx=canvas.getContext('webgl')||canvas.getContext('experimental-webgl');if(glCtx){let dbg=glCtx.getExtension('WEBGL_debug_renderer_info');if(dbg)gl=glCtx.getParameter(dbg.UNMASKED_RENDERER_WEBGL);}}catch(e){}h.innerHTML=`<li>CPU Núcleos: <b>${nc}</b></li><li>RAM aprox: <b>${dm} GB</b></li><li>GPU: <span style="font-size:11px">${gl}</span></li>`;}initHw();
+function initBat(){if(navigator.getBattery){navigator.getBattery().then(b=>{let upd=()=>document.getElementById('bat').innerText=`Nível: ${Math.round(b.level*100)}% | Carregando: ${b.charging?'Sim':'Não'}`;upd();b.addEventListener('levelchange',upd);b.addEventListener('chargingchange',upd);});}else{document.getElementById('bat').innerText='API de Bateria não suportada';}}initBat();
+let mBox=document.getElementById('mTest');mBox.addEventListener('mousedown',e=>{mBox.innerText=`Botão ${e.button===0?'Esquerdo':e.button===1?'Meio':'Direito'} pressionado`;});mBox.addEventListener('wheel',e=>{mBox.innerText=`Scroll detectado: ${e.deltaY>0?'Para baixo':'Para cima'}`;});
+window.addEventListener('keydown',e=>{document.getElementById('kTest').innerText=`Tecla: ${e.key} (Código: ${e.code})`;});
+async function initMed(){try{let dev=await navigator.mediaDevices.enumerateDevices(),lst=document.getElementById('medList');lst.innerHTML='';dev.forEach(d=>{let li=document.createElement('li');li.innerText=`${d.kind}: ${d.label||'Desconhecido'}`;lst.appendChild(li);});}catch(e){}}initMed();
+function initSens(){let s=document.getElementById('sens'),t=navigator.maxTouchPoints>0?'Sim':'Não';s.innerHTML=`<li>Tela Touch: <b>${t} (${navigator.maxTouchPoints} pontos)</b></li><li>Orientação: <b>${screen.orientation?screen.orientation.type:'N/D'}</b></li>`;}initSens();
+function tG(){let g=document.getElementById('geo');if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{g.innerText=`Lat: ${p.coords.latitude.toFixed(2)} | Lon: ${p.coords.longitude.toFixed(2)}`;},()=>{g.innerText='Permissão negada ou indisponível';});}else{g.innerText='Geolocalização não suportada';}}
+</script>
+</body>
+</html>
