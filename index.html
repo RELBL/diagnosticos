@@ -16,62 +16,90 @@
 <main class="w-full max-w-5xl">
 <h1 class="text-3xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Dashboard de Dispositivos</h1>
 <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<!-- IP -->
+
+<!-- ENDEREÇO IP (SEPARADO) -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Endereço IP</h2><p id="ip" class="text-gray-400 font-mono text-sm">Clique no botão para verificar o IP</p></div>
-<button onclick="lI()" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition">Verificar IP</button>
+<div>
+<h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-network-wired text-blue-400"></i> Endereço IP</h2>
+<p id="ip" class="text-gray-400 font-mono text-sm">Clique no botão para verificar</p>
+<div class="mt-3 space-y-1 text-xs font-mono text-gray-300" id="ipDetails">
+<div>País: <span class="text-gray-500">--</span></div>
+<div>Cidade: <span class="text-gray-500">--</span></div>
+<div>Provedor: <span class="text-gray-500">--</span></div>
+<div>Dispositivo: <span class="text-gray-500">--</span></div>
+<div>Navegador: <span class="text-gray-500">--</span></div>
+<div>Sistema Operacional: <span class="text-gray-500">--</span></div>
+</div>
+</div>
+<button onclick="lI()" class="mt-4 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition text-sm">Verificar IP e Detalhes</button>
 </article>
-<!-- NET -->
+
+<!-- VELOCIDADE E REDE (SEPARADO) -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-<div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-gauge-high text-green-400"></i> Velocidade e Rede</h2><p id="net" class="text-gray-400 font-mono text-sm mb-1">Clique no botão para testar a rede</p><p id="tipoNet" class="text-gray-500 text-xs">Tipo: --</p></div>
-<button onclick="tV()" class="mt-4 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition">Testar Velocidade</button>
+<div>
+<h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-gauge-high text-green-400"></i> Velocidade e Conexão</h2>
+<p id="net" class="text-gray-400 font-mono text-sm mb-1">Clique no botão para testar</p>
+<p id="tipoNet" class="text-xs font-mono text-gray-400 mt-2">Tipo de Conexão: --</p>
+</div>
+<button onclick="tV()" class="mt-4 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition text-sm">Testar Velocidade e Rede</button>
 </article>
+
 <!-- WEBCAM -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-camera text-purple-400"></i> Teste de Webcam</h2>
 <div class="relative bg-black rounded-lg overflow-hidden h-40 flex items-center justify-center mt-2"><video id="cam" autoplay playsinline class="w-full h-full object-cover hidden"></video><span id="camMsg" class="text-gray-500 text-sm">Câmera desativada</span></div></div>
 <div class="flex gap-2 mt-4"><button onclick="tC()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium transition">Ligar</button><button onclick="dC()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Desligar</button></div>
 </article>
+
 <!-- MIC -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-microphone text-yellow-400"></i> Teste de Microfone</h2><canvas id="micC" class="w-full h-24 bg-black rounded-lg mt-2"></canvas></div>
 <div class="flex gap-2 mt-4"><button onclick="tM()" class="flex-1 bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium transition text-black font-semibold">Ouvir</button><button onclick="dM()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Parar</button></div>
 </article>
+
 <!-- AUDIO -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-music text-pink-400"></i> Teste de Áudio</h2><p class="text-gray-400 text-sm mb-4">Clique no botão abaixo para testar a saída de som nas suas caixas de som ou fones de ouvido.</p></div>
 <button onclick="playAudioTest()" class="w-full bg-pink-600 hover:bg-pink-500 text-white px-4 py-3 rounded-lg font-medium transition flex items-center justify-center gap-2"><i class="fa-solid fa-volume-high"></i> Tocar Som de Teste</button>
 </article>
+
 <!-- HARDWARE -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-microchip text-cyan-400"></i> Hardware & Sistema</h2>
 <ul id="hw" class="text-gray-300 text-sm space-y-1 font-mono mt-2"><li>Carregando hardware...</li></ul></div>
 </article>
+
 <!-- BATTERY -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-battery-half text-amber-400"></i> Status da Bateria</h2><p id="bat" class="text-gray-300 font-mono text-sm mt-2">Verificando bateria...</p></div>
 </article>
+
 <!-- MOUSE -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-computer-mouse text-indigo-400"></i> Teste de Mouse</h2><div id="mTest" class="bg-black/40 border border-gray-700 h-24 rounded-lg flex items-center justify-center text-xs text-gray-400 select-none mt-2">Clique aqui e teste os botões ou o scroll</div></div>
 </article>
+
 <!-- KEYBOARD -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-keyboard text-rose-400"></i> Teste de Teclado</h2><p id="kTest" class="text-gray-300 text-sm font-mono mt-2">Pressione qualquer tecla...</p></div>
 </article>
+
 <!-- MEDIA -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-photo-film text-teal-400"></i> Dispositivos de Mídia</h2><ul id="medList" class="text-gray-300 text-xs font-mono space-y-1 mt-2"><li>Listando...</li></ul></div>
 </article>
+
 <!-- SENSORS -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-compass text-orange-400"></i> Sensores e Toque</h2><ul id="sens" class="text-gray-300 text-xs font-mono space-y-1 mt-2"><li>Analisando...</li></ul></div>
 </article>
+
 <!-- GEO -->
 <article class="bg-[#111827] border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
 <div><h2 class="text-xl font-bold mb-2 flex items-center gap-2"><i class="fa-solid fa-location-dot text-red-400"></i> Geolocalização</h2><p id="geo" class="text-gray-300 text-sm font-mono mt-2">Aguardando permissão...</p></div>
 <button onclick="tG()" class="mt-4 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition">Obter Localização</button>
 </article>
+
 </section>
 </main>
 <script>
@@ -82,29 +110,72 @@ setInterval(()=>{let d=new Date(),opt={weekday:'long',year:'numeric',month:'shor
 async function lI(){
   document.getElementById('ip').innerText='A carregar IP...';
   try{
-    let r=await fetch('https://api.ipify.org?format=json'),j=await r.json();
-    document.getElementById('ip').innerText=j.ip;
-    document.getElementById('ip').className="text-gray-300 font-mono text-lg";
+    let r=await fetch('https://ipapi.co/json/');
+    let j=await r.json();
+    document.getElementById('ip').innerText=j.ip || 'Indisponível';
+    document.getElementById('ip').className="text-gray-200 font-mono text-sm font-bold";
+    
+    let ua = navigator.userAgent;
+    let browser = "Desconhecido";
+    if(ua.includes("Firefox")) browser = "Mozilla Firefox";
+    else if(ua.includes("SamsungBrowser")) browser = "Samsung Internet";
+    else if(ua.includes("Opera") || ua.includes("OPR")) browser = "Opera";
+    else if(ua.includes("Trident")) browser = "Internet Explorer";
+    else if(ua.includes("Edge")) browser = "Microsoft Edge";
+    else if(ua.includes("Chrome")) browser = "Google Chrome";
+    else if(ua.includes("Safari")) browser = "Apple Safari";
+
+    let os = "Desconhecido";
+    if(ua.includes("Win")) os = "Windows";
+    else if(ua.includes("Android")) os = "Android";
+    else if(ua.includes("like Mac")) os = "iOS (iPhone/iPad)";
+    else if(ua.includes("Mac")) os = "MacOS";
+    else if(ua.includes("Linux")) os = "Linux";
+
+    let deviceType = /Mobi|Android/i.test(navigator.userAgent) ? "Dispositivo Móvel" : "Computador (Desktop)";
+
+    document.getElementById('ipDetails').innerHTML=`
+      <div>País: <span class="text-white">${j.country_name || 'N/D'}</span></div>
+      <div>Cidade: <span class="text-white">${j.city || 'N/D'}</span></div>
+      <div>Provedor: <span class="text-white">${j.org || 'N/D'}</span></div>
+      <div>Dispositivo: <span class="text-white">${deviceType}</span></div>
+      <div>Navegador: <span class="text-white">${browser}</span></div>
+      <div>Sistema Operacional: <span class="text-white">${os}</span></div>
+    `;
   }catch(e){
-    document.getElementById('ip').innerText='Erro ao carregar IP';
+    document.getElementById('ip').innerText='Erro ao carregar dados de IP';
   }
 }
 
 async function tV(){
   let n=document.getElementById('net');
-  n.innerText='Medindo latência e velocidade...';
+  n.innerText='A medir velocidade real...';
+  
   let s=performance.now();
   try{
     await fetch('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'});
     let l=Math.round(performance.now()-s);
-    let st=navigator.connection?navigator.connection.downlink:'Desconhecido';
-    n.innerHTML=`Latência: <b>${l} ms</b><br>Velocidade estimada: <b>${st} Mbps</b>`;
-    let stN=navigator.connection;
-    if(stN){
-      document.getElementById('tipoNet').innerText=`Tipo de Conexão (Rede): ${stN.effectiveType||'Desconhecido'} (${stN.type||'Padrão'})`;
-    }
+
+    let imageSizeB = 3000000; // ~3MB
+    let startTime = performance.now();
+    let response = await fetch('https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?' + Math.random(), {cache: 'no-store'});
+    let blob = await response.blob();
+    let endTime = performance.now();
+    
+    let durationSec = (endTime - startTime) / 1000;
+    let bitsLoaded = blob.size * 8;
+    let speedBps = bitsLoaded / durationSec;
+    let speedMbps = speedBps / (1024 * 1024);
+
+    n.innerHTML=`Latência: <b>${l} ms</b><br>Velocidade Real: <b class="text-green-400">${speedMbps.toFixed(2)} Mbps</b>`;
+    n.className="text-gray-200 font-mono text-sm";
+
+    let conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    let connType = conn && conn.effectiveType ? conn.effectiveType.toUpperCase() : 'Banda Larga / Wi-Fi';
+    let connMedium = conn && conn.type ? conn.type : 'Ethernet / Alta Velocidade';
+    document.getElementById('tipoNet').innerHTML=`Tipo de Conexão (Rede): <b class="text-white">${connType} (${connMedium})</b>`;
   }catch(e){
-    n.innerText='Erro no teste de rede';
+    n.innerText='Erro no teste de velocidade';
   }
 }
 
