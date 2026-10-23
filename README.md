@@ -3,7 +3,7 @@
 Seja bem-vindo(a) ao meu perfil do GitHub! Estou a dar os meus primeiros passos no mundo do desenvolvimento web e da tecnologia, construindo e partilhando os meus projetos de estudo.
 
 - 🌱 Atualmente estou a focar-me na aprendizagem de: **HTML, CSS, JavaScript e Git**
-- 🚀 Meu primeiro projeto publicado: Um **[Dashboard de Dispositivos](https://relbl.github.io/R/)** (Painel web interativo com ferramentas de diagnóstico).
+- 🚀 Meu primeiro projeto publicado: Um **[Dashboard de Dispositivos](https://relbl.github.io/diagnosticos/)** (Painel web interativo com ferramentas de diagnóstico).
 - 💼 Perfil profissional: www.linkedin.com/in/rodrigo-j-d-e
 
 ---
