@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico de Sistema e Periféricos — Rodrigo Elbl</title>
+<meta name="description" content="Hardware, periféricos, tela e rede em um único painel, direto no navegador.">
+<style>
+:root{--bg:#2a3b50;--panel:#364b64;--line:#4d647f;--text:#f1f5f9;--muted:#bac6d3;--accent:#ffb454;--ok:#7bd88f;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg) url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='360'%20height='360'%20fill='none'%20stroke='rgb%28151,165,181%29'%20stroke-opacity='.2'%20stroke-width='1.5'%20stroke-linejoin='round'%3E%3Cpath%20d='M0%2050H70L100%2080H200L230%2050H360'/%3E%3Cpath%20d='M0%20250H120L150%20280H260L290%20250H360'/%3E%3Cpath%20d='M40%20200V150L70%20120H140'/%3E%3Cpath%20d='M230%20210V170H290L310%20150V120'/%3E%3Cpath%20d='M40%20320H100L120%20340'/%3E%3Cpath%20d='M300%20310V330H340'/%3E%3Crect%20x='160'%20y='135'%20width='40'%20height='40'%20rx='3'/%3E%3Cpath%20d='M152%20148H160M152%20158H160M152%20168H160M200%20148H208M200%20158H208M200%20168H208'/%3E%3Ccircle%20cx='140'%20cy='120'%20r='4'/%3E%3Ccircle%20cx='310'%20cy='120'%20r='4'/%3E%3Ccircle%20cx='300'%20cy='50'%20r='4'/%3E%3Ccircle%20cx='60'%20cy='250'%20r='4'/%3E%3Cg%20fill='rgb%28151,165,181%29'%20fill-opacity='.2'%20stroke='none'%3E%3Ccircle%20cx='40'%20cy='200'%20r='2.5'/%3E%3Ccircle%20cx='230'%20cy='210'%20r='2.5'/%3E%3Ccircle%20cx='40'%20cy='320'%20r='2.5'/%3E%3Ccircle%20cx='300'%20cy='310'%20r='2.5'/%3E%3C/g%3E%3C/svg%3E") center top;color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:0 16px 56px}
+.wrap{max-width:960px;margin:0 auto}
+header{padding:28px 0 20px}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.top strong{color:var(--text)}
+h1{font-size:clamp(30px,6vw,44px);line-height:1.1;letter-spacing:-.02em;margin:24px 0 8px}
+.lead{color:var(--muted)}
+.priv{margin-top:16px;padding:10px 14px;border-left:3px solid var(--accent);background:var(--panel);font-size:14px;color:var(--muted);width:fit-content;max-width:100%}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;margin:0 -16px;padding:0 16px}
+nav a{padding:12px;color:var(--muted);text-decoration:none;white-space:nowrap;font-size:15px}
+nav a:hover{color:var(--text)}
+section{padding-top:40px;scroll-margin-top:48px}
+h2{font-size:22px;margin-bottom:16px}
+h3{font-size:17px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.card>:last-child{margin-top:auto}
+.hint{color:var(--muted);font-size:14px}
+.out:empty{display:none}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 28px}
+.read div{padding:12px 0;border-top:1px solid var(--line)}
+.read dt{font-size:13px;color:var(--muted)}
+.read dd{font-size:17px;font-weight:600;overflow-wrap:anywhere}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 16px}
+.kv dt{color:var(--muted)}
+.kv dd{font-weight:600;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.list{list-style:none;padding:0;font-size:14px;display:grid;gap:8px}
+.list span{display:block;color:var(--muted);font-size:13px}
+.box{background:#000;border-radius:6px;height:160px;display:grid;place-items:center;color:var(--muted);font-size:14px;text-align:center;padding:12px;overflow:hidden}
+.box video,.box canvas{width:100%;height:100%;object-fit:cover}
+#mouse{cursor:pointer;user-select:none}
+.big{font-size:32px;font-weight:700;color:var(--text)}
+.fps{font-size:44px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+button{font:inherit;min-height:40px;padding:0 16px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer}
+button:hover{border-color:var(--muted)}
+button.pri{background:var(--accent);border-color:var(--accent);color:#1a1100;font-weight:600}
+button.pri:hover{filter:brightness(1.08)}
+button:disabled{opacity:.5;cursor:wait}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row button{flex:1}
+.sw{background:var(--c);color:var(--t)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#log{background:#000;border:1px solid var(--line);border-radius:6px;height:180px;overflow:auto;padding:12px;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;color:var(--ok)}
+#ov{position:fixed;inset:0;z-index:99;display:block;cursor:pointer}
+#ov span{position:absolute;top:16px;right:16px;background:#000a;color:#fff;padding:6px 12px;border-radius:6px;font-size:13px;pointer-events:none;animation:out .4s 3s forwards}
+@keyframes out{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){#ov span{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="top"><span>Criado por <strong>Rodrigo Elbl</strong></span><time id="clock"></time></div>
+<h1>Diagnóstico de Sistema e Periféricos</h1>
+<p class="lead">Hardware, periféricos, tela e rede em um único painel, direto no navegador.</p>
+<p class="priv">Os testes rodam no seu navegador e nada é gravado. Só “Ver meu IP” e “Medir velocidade” consultam serviços externos.</p>
+</header>
+
+<nav aria-label="Seções">
+<a href="#resumo">Resumo</a><a href="#rede">Rede e localização</a><a href="#midia">Câmera e som</a><a href="#entrada">Teclado e mouse</a><a href="#tela">Tela</a>
+</nav>
+
+<main>
+<section id="resumo"><h2>Seu aparelho agora</h2>
+<dl class="read">
+<div><dt>Dispositivo</dt><dd id="dDev"></dd></div>
+<div><dt>Navegador</dt><dd id="dBr"></dd></div>
+<div><dt>Sistema</dt><dd id="dOS"></dd></div>
+<div><dt>Processador</dt><dd id="dCpu"></dd></div>
+<div><dt>Memória</dt><dd id="dRam"></dd></div>
+<div><dt>Placa de vídeo</dt><dd id="dGpu"></dd></div>
+<div><dt>Bateria</dt><dd id="dBat">Verificando…</dd></div>
+<div><dt>Qualidade da rede</dt><dd id="dQual"></dd></div>
+<div><dt>Toque</dt><dd id="dTouch"></dd></div>
+<div><dt>Orientação</dt><dd id="dOri"></dd></div>
+</dl></section>
+
+<section id="rede"><h2>Rede e localização</h2><div class="grid">
+<article class="card"><h3>Endereço IP</h3><p class="hint">Mostra seu IP público e a região que o provedor informa.</p>
+<div class="out" id="ipOut" aria-live="polite"></div><button class="pri" onclick="ip(this)">Ver meu IP</button></article>
+<article class="card"><h3>Velocidade da conexão</h3><p class="hint">Mede a latência e baixa um arquivo de teste. Leva alguns segundos.</p>
+<div class="out" id="netOut" aria-live="polite"></div><button class="pri" onclick="speed(this)">Medir velocidade</button></article>
+<article class="card"><h3>Localização</h3><p class="hint">Pede ao navegador a posição do aparelho. Nada é enviado a ninguém.</p>
+<div class="out" id="geoOut" aria-live="polite"></div><button class="pri" onclick="geo(this)">Obter localização</button></article>
+</div></section>
+
+<section id="midia"><h2>Câmera e som</h2><div class="grid">
+<article class="card"><h3>Câmera</h3><div class="box"><video id="cam" autoplay playsinline muted hidden></video><span id="camMsg" aria-live="polite">Câmera desligada.</span></div>
+<div class="row"><button class="pri" onclick="camOn()">Ligar câmera</button><button onclick="camOff()">Desligar</button></div></article>
+<article class="card"><h3>Microfone</h3><p class="hint">Fale ou bata palmas: as barras devem se mexer.</p><div class="box"><canvas id="micC" hidden></canvas><span id="micMsg" aria-live="polite">Microfone parado.</span></div>
+<div class="row"><button class="pri" onclick="micOn()">Ouvir microfone</button><button onclick="micOff()">Parar</button></div></article>
+<article class="card"><h3>Som</h3><p class="hint">Toca uma melodia curta que vai do lado esquerdo ao direito, para você conferir os dois canais.</p>
+<p class="out" id="toneOut" aria-live="polite"></p><button class="pri" onclick="tone()">Tocar som de teste</button></article>
+<article class="card"><h3>Dispositivos de áudio e vídeo</h3><ul class="list" id="devs"><li>Listando…</li></ul></article>
+</div></section>
+
+<section id="entrada"><h2>Teclado e mouse</h2><div class="grid">
+<article class="card"><h3>Mouse</h3><div class="box" id="mouse">Clique aqui e gire a rodinha para testar</div></article>
+<article class="card"><h3>Teclado</h3><div class="box" id="key">Pressione qualquer tecla</div></article>
+</div></section>
+
+<section id="tela"><h2>Tela</h2><div class="grid">
+<article class="card"><h3>Cores e pixels mortos</h3><p class="hint">Preenche a tela com uma cor sólida para você procurar pontos que não mudam.</p>
+<div class="row">
+<button class="sw" style="--c:#000;--t:#fff" onclick="scr('black')">Preto</button>
+<button class="sw" style="--c:#fff;--t:#000" onclick="scr('white')">Branco</button>
+<button class="sw" style="--c:#e5222a;--t:#fff" onclick="scr('red')">Vermelho</button>
+<button class="sw" style="--c:#1f9d4d;--t:#fff" onclick="scr('green')">Verde</button>
+<button class="sw" style="--c:#2358e0;--t:#fff" onclick="scr('blue')">Azul</button>
+<button class="sw" style="--c:#555;--t:#fff" onclick="scr('pattern')">Listras</button>
+</div></article>
+<article class="card"><h3>Taxa de atualização</h3><p class="hint">Mostra quantos quadros por segundo sua tela exibe agora.</p>
+<div><span class="fps" id="fpsN">--</span> <span class="hint">FPS</span></div><p class="hint" id="fpsSt" aria-live="polite">Monitor parado.</p>
+<button class="pri" onclick="fps(this)">Iniciar monitor</button></article>
+</div></section>
+
+<section id="registro"><h2>Registro da sessão</h2>
+<article class="card"><p class="hint">Tudo o que você testou nesta visita, com o horário de cada ação.</p><div id="log" role="log"></div>
+<button onclick="clearLog()" style="align-self:flex-end">Limpar registro</button></article>
+</section>
+</main>
+</div>
+
+<div id="ov" role="dialog" aria-label="Teste de tela" tabindex="-1" hidden onclick="scrEnd()"><span>Toque ou pressione Esc para sair</span></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'N/D').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const kv=r=>'<dl class="kv">'+r.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')+'</dl>';
+function log(m){const t=$('log'),d=document.createElement('div');d.textContent=`[${new Date().toLocaleTimeString('pt-BR')}] ${m}`;t.append(d);t.scrollTop=t.scrollHeight}
+function clearLog(){$('log').replaceChildren();log('Registro limpo.')}
+const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+tick();setInterval(tick,1000);
+const NOACCESS='Permita o acesso pelo ícone de cadeado na barra de endereço e tente de novo.';
+
+/* Resumo do aparelho: preenchido sozinho, sem pedir permissão */
+(function(){
+  const ua=navigator.userAgent,s=(id,v)=>$(id).textContent=v;
+  const br=/Edg\//.test(ua)?'Microsoft Edge':/OPR|Opera/.test(ua)?'Opera':/SamsungBrowser/.test(ua)?'Samsung Internet':/Firefox|FxiOS/.test(ua)?'Firefox':/Chrome|CriOS/.test(ua)?'Google Chrome':/Safari/.test(ua)?'Safari':'Não identificado';
+  const os=/Android/.test(ua)?'Android':/iPhone|iPad|iPod/.test(ua)?'iOS':/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'macOS':/Linux|X11/.test(ua)?'Linux':'Não identificado';
+  const dev=/Mobi|Android/i.test(ua)?'Celular ou tablet':'Computador';
+  const nc=navigator.hardwareConcurrency,dm=navigator.deviceMemory,c=navigator.connection,NI='Não informado pelo navegador';
+  let gpu=NI;
+  try{const g=document.createElement('canvas').getContext('webgl'),x=g&&g.getExtension('WEBGL_debug_renderer_info');if(x)gpu=g.getParameter(x.UNMASKED_RENDERER_WEBGL)}catch{}
+  s('dDev',dev);s('dBr',br);s('dOS',os);
+  s('dCpu',nc?nc+' núcleos':NI);s('dRam',dm?dm+' GB (aproximado)':NI);s('dGpu',gpu);
+  const Q={'slow-2g':'Muito lenta','2g':'Muito lenta','3g':'Lenta','4g':'Boa'};
+  s('dQual',c&&Q[c.effectiveType]||NI);
+  s('dTouch',navigator.maxTouchPoints>0?'Sim, '+navigator.maxTouchPoints+' pontos':'Não');
+  const ori=()=>{const o=screen.orientation?.type||'';s('dOri',o.startsWith('portrait')?'Retrato':o.startsWith('landscape')?'Paisagem':NI)};
+  ori();screen.orientation?.addEventListener('change',ori);
+  if(navigator.getBattery)navigator.getBattery().then(b=>{const u=()=>s('dBat',Math.round(b.level*100)+'%'+(b.charging?' (carregando)':''));u();b.onlevelchange=b.onchargingchange=u});
+  else s('dBat',NI);
+  log(`Aparelho detectado: ${dev}, ${br}, ${os}.`);
+})();
+
+async function ip(b){
+  const o=$('ipOut');b.disabled=true;o.textContent='Consultando…';log('Consultando endereço IP.');
+  try{
+    const j=await(await fetch('https://ipapi.co/json/')).json();
+    if(j.error)throw 0;
+    o.innerHTML=kv([['IP',j.ip],['País',j.country_name],['Cidade',j.city],['Provedor',j.org]]);
+    log(`IP detectado: ${j.ip} (${j.city}, ${j.country_name}).`);
+  }catch{
+    o.textContent='Não foi possível consultar o IP. Um bloqueador de anúncios ou o limite do serviço pode ter impedido. Tente de novo em instantes.';
+    log('Falha ao consultar o IP.');
+  }
+  b.disabled=false;
+}
+
+async function speed(b){
+  const o=$('netOut');b.disabled=true;o.textContent='Medindo…';log('Iniciando teste de velocidade.');
+  try{
+    let t=performance.now();
+    await fetch('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'});
+    const ms=Math.round(performance.now()-t);
+    t=performance.now();
+    const blob=await(await fetch('https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?'+Math.random(),{cache:'no-store'})).blob();
+    const mbps=blob.size*8/((performance.now()-t)/1000)/1e6;
+    o.innerHTML=kv([['Latência',ms+' ms'],['Download',mbps.toFixed(1)+' Mbps']]);
+    log(`Rede: latência ${ms} ms, download ${mbps.toFixed(1)} Mbps.`);
+  }catch{
+    o.textContent='Não foi possível medir a velocidade. Verifique sua conexão e tente de novo.';
+    log('Falha no teste de velocidade.');
+  }
+  b.disabled=false;
+}
+
+function geo(b){
+  const o=$('geoOut');
+  if(!navigator.geolocation){o.textContent='Este navegador não oferece geolocalização.';return}
+  b.disabled=true;o.textContent='Aguardando permissão…';log('Solicitando localização.');
+  navigator.geolocation.getCurrentPosition(p=>{
+    b.disabled=false;const c=p.coords;
+    o.innerHTML=kv([['Latitude',c.latitude.toFixed(4)],['Longitude',c.longitude.toFixed(4)],['Precisão','± '+Math.round(c.accuracy)+' m']]);
+    log(`Localização obtida: ${c.latitude.toFixed(2)}, ${c.longitude.toFixed(2)}.`);
+  },e=>{
+    b.disabled=false;
+    o.textContent=e.code===1?'Permissão negada. Libere a localização nas configurações do site e tente de novo.':'Não foi possível obter a localização agora. Tente de novo.';
+    log('Localização indisponível.');
+  },{timeout:10000});
+}
+
+let cam;
+async function camOn(){
+  if(cam)return;
+  try{
+    cam=await navigator.mediaDevices.getUserMedia({video:true});
+    $('cam').srcObject=cam;$('cam').hidden=false;$('camMsg').hidden=true;
+    log('Câmera ligada.');devs();
+  }catch{
+    $('camMsg').hidden=false;$('camMsg').textContent='Sem acesso à câmera. '+NOACCESS;log('Falha ao acessar a câmera.');
+  }
+}
+function camOff(){
+  if(!cam)return;
+  cam.getTracks().forEach(t=>t.stop());cam=null;
+  $('cam').hidden=true;$('camMsg').hidden=false;$('camMsg').textContent='Câmera desligada.';log('Câmera desligada.');
+}
+
+let mic,ac,raf;
+async function micOn(){
+  if(mic)return;
+  try{
+    mic=await navigator.mediaDevices.getUserMedia({audio:true});
+    ac=new(window.AudioContext||window.webkitAudioContext)();
+    const an=ac.createAnalyser();an.fftSize=256;ac.createMediaStreamSource(mic).connect(an);
+    const c=$('micC'),x=c.getContext('2d'),d=new Uint8Array(an.frequencyBinCount);
+    c.hidden=false;$('micMsg').hidden=true;c.width=c.clientWidth;c.height=c.clientHeight;
+    const w=c.width/d.length;
+    (function draw(){
+      raf=requestAnimationFrame(draw);an.getByteFrequencyData(d);
+      x.clearRect(0,0,c.width,c.height);x.fillStyle='#ffb454';
+      d.forEach((v,i)=>{const h=v/255*c.height;x.fillRect(i*w,c.height-h,w-1,h)});
+    })();
+    log('Microfone ativado.');devs();
+  }catch{
+    mic=null;$('micMsg').hidden=false;$('micMsg').textContent='Sem acesso ao microfone. '+NOACCESS;log('Falha ao acessar o microfone.');
+  }
+}
+function micOff(){
+  if(!mic)return;
+  mic.getTracks().forEach(t=>t.stop());mic=null;cancelAnimationFrame(raf);ac.close();
+  $('micC').hidden=true;$('micMsg').hidden=false;$('micMsg').textContent='Microfone parado.';log('Microfone parado.');
+}
+
+function tone(){
+  const o=$('toneOut');
+  try{
+    const a=new(window.AudioContext||window.webkitAudioContext)(),n=a.currentTime+.05;
+    [[523.25,-1],[659.25,-.4],[783.99,.4],[1046.5,1]].forEach(([f,p],i)=>{
+      const t=n+i*.35,g=a.createGain(),pan=a.createStereoPanner?a.createStereoPanner():null;
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.15,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+1.1);
+      if(pan){pan.pan.value=p;g.connect(pan).connect(a.destination)}else g.connect(a.destination);
+      [[f,1],[f*2,.3]].forEach(([q,v])=>{const s=a.createOscillator(),h=a.createGain();s.frequency.value=q;h.gain.value=v;s.connect(h).connect(g);s.start(t);s.stop(t+1.2)});
+    });
+    setTimeout(()=>a.close(),2800);
+    o.textContent='Tocando uma melodia curta, da esquerda para a direita…';log('Som de teste tocado (melodia estéreo).');
+    setTimeout(()=>o.textContent='Não ouviu? Confira o volume e a saída de áudio. Se ouviu só de um lado, verifique o fone ou a caixa.',2000);
+  }catch{
+    o.textContent='Não foi possível reproduzir o som neste navegador.';log('Falha no teste de som.');
+  }
+}
+
+async function devs(){
+  const n={videoinput:'Câmera',audioinput:'Microfone',audiooutput:'Saída de áudio'};
+  try{
+    const l=await navigator.mediaDevices.enumerateDevices();
+    $('devs').innerHTML=l.length?l.map(d=>`<li><span>${n[d.kind]||esc(d.kind)}</span>${esc(d.label||'Nome liberado após permitir câmera ou microfone')}</li>`).join(''):'<li>Nenhum dispositivo encontrado.</li>';
+  }catch{$('devs').innerHTML='<li>Não foi possível listar os dispositivos.</li>'}
+}
+devs();navigator.mediaDevices?.addEventListener?.('devicechange',devs);
+
+const mb=$('mouse');
+mb.addEventListener('mousedown',e=>{const n=['esquerdo','do meio','direito','voltar','avançar'][e.button]||e.button;mb.textContent=`Botão ${n} pressionado`;log(`Mouse: botão ${n}.`)});
+mb.addEventListener('wheel',e=>{mb.textContent='Rodinha: '+(e.deltaY>0?'para baixo':'para cima')},{passive:true});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='F12'||((e.ctrlKey||e.metaKey)&&(e.code==='KeyU'||((e.shiftKey||e.altKey)&&(e.code==='KeyI'||e.code==='KeyJ')))))e.preventDefault();
+  if(e.key==='Escape'&&!$('ov').hidden)return scrEnd();
+  $('key').innerHTML=`<div><div class="big">${esc(e.key===' '?'Espaço':e.key)}</div><div class="hint">Código: ${esc(e.code)}</div></div>`;
+});
+
+function scr(c){
+  const o=$('ov');
+  o.style.background=c==='pattern'?'repeating-linear-gradient(45deg,#000 0 10px,#fff 10px 20px)':c;
+  o.hidden=false;o.focus();o.requestFullscreen?.().catch(()=>{});log(`Teste de tela: ${c}.`);
+}
+function scrEnd(){
+  $('ov').hidden=true;if(document.fullscreenElement)document.exitFullscreen();log('Teste de tela encerrado.');
+}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&!$('ov').hidden)scrEnd()});
+
+let fr=false,fid;
+function fps(b){
+  const n=$('fpsN'),st=$('fpsSt');
+  if(fr){fr=false;cancelAnimationFrame(fid);b.textContent='Iniciar monitor';b.className='pri';n.textContent='--';st.textContent='Monitor parado.';log('Monitor de FPS parado.');return}
+  fr=true;b.textContent='Parar monitor';b.className='';st.textContent='Medindo…';log('Monitor de FPS iniciado.');
+  let t=performance.now(),f=0;
+  (function loop(now){
+    if(!fr)return;f++;
+    if(now-t>=1000){const v=Math.round(f*1000/(now-t));n.textContent=v;st.textContent=v>=120?'Alta taxa de atualização':v>=90?'Fluida (cerca de 90 a 120 Hz)':v>=55?'Padrão (60 Hz)':'Baixa ou instável';f=0;t=now}
+    fid=requestAnimationFrame(loop);
+  })(t);
+}
+log('Página carregada.');
+</script>
+</body>
+</html>
