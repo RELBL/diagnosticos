@@ -189,7 +189,7 @@ header .row button{flex:0 0 auto}
   <button class="pri" onclick="toggleKiosk()">Tela cheia</button>
   <button onclick="triggerPrint()">Imprimir Laudo em PDF</button>
 </div>
-<p class="priv">Os testes rodam no navegador e nada é salvo. IP e velocidade consultam serviços externos e entram no laudo.</p>
+<p class="priv">Os testes rodam no navegador e nada é salvo. Só a consulta de IP usa um serviço externo, e IP e velocidade entram no laudo.</p>
 </header>
 
 <nav aria-label="Seções" class="no-print">
@@ -214,7 +214,7 @@ header .row button{flex:0 0 auto}
 <section id="rede"><h2>Diagnóstico de Conectividade</h2><div class="grid">
 <article class="card"><h3>Endereço IP</h3><p class="hint">Mostra seu IP público e a região que o provedor informa.</p>
 <div class="out" id="ipOut" aria-live="polite"><p class="mut">Teste não executado.</p></div><button class="pri no-print" onclick="ip(this)">Testar Conexão / Obter IP</button></article>
-<article class="card"><h3>Desempenho de Banda (Velocidade)</h3><p class="hint">Mede a latência e baixa um arquivo de teste. Leva alguns segundos.</p>
+<article class="card"><h3>Desempenho de Banda (Velocidade)</h3><p class="hint">Mede a latência e a velocidade de download até o servidor deste site, com um arquivo de 5 MB (usa cerca de 5 MB de dados).</p>
 <div class="out" id="netOut" aria-live="polite"><p class="mut">Teste não executado.</p></div><button class="pri no-print" onclick="speed(this)">Medir Latência e Download</button></article>
 </div></section>
 
@@ -400,11 +400,11 @@ async function ip(b){
 async function speed(b){
   const o=$('netOut');b.disabled=true;o.innerHTML='<p>Medindo… leva alguns segundos.</p>';log('Teste de velocidade iniciado.');
   try{
-    let t=performance.now();
-    await fetchWithTimeout('https://www.cloudflare.com/cdn-cgi/trace',{cache:'no-store'},12000);
-    const ms=Math.round(performance.now()-t);
-    t=performance.now();
-    const blob=await(await fetchWithTimeout('https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg?'+Date.now(),{cache:'no-store'},25000)).blob();
+    const url='./teste-5mb.bin',pings=[];
+    for(let i=0;i<3;i++){const q=performance.now();await fetchWithTimeout(url,{method:'HEAD',cache:'no-store'},12000);pings.push(performance.now()-q)}
+    const ms=Math.round(pings.sort((a,b)=>a-b)[1]);
+    const t=performance.now();
+    const blob=await(await fetchWithTimeout(url,{cache:'no-store'},30000)).blob();
     const elapsed=(performance.now()-t)/1000;
     if(!blob.size||elapsed<=0)throw new Error('Resposta vazia');
     const mbps=blob.size*8/elapsed/1e6;
