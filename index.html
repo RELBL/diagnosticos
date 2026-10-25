@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- © 2026 Rodrigo Elbl. Todos os direitos reservados. Reprodução, modificação ou remoção deste aviso sem autorização é proibida. -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +7,8 @@
 <title>Diagnóstico de Sistema e Periféricos — Rodrigo Elbl</title>
 <meta name="description" content="Hardware, periféricos, tela e rede em um único painel, direto no navegador.">
 <meta name="theme-color" content="#2a3b50">
+<meta name="author" content="Rodrigo Elbl">
+<meta name="copyright" content="© 2026 Rodrigo Elbl. Todos os direitos reservados.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Diagnóstico de Sistema e Periféricos">
 <meta property="og:description" content="Hardware, periféricos, tela e rede em um único painel, direto no navegador.">
@@ -295,6 +298,7 @@ header .row button{flex:0 0 auto}
 
 <div id="ov" role="dialog" aria-label="Teste de tela" tabindex="-1" hidden onclick="scrEnd()"><span>Toque ou pressione Esc para sair</span></div>
 
+<footer id="assin" style="display:block !important;visibility:visible !important;opacity:1 !important;position:static !important;float:none !important;height:auto !important;max-height:none !important;overflow:visible !important;transform:none !important;clip-path:none !important;margin:32px auto 0 !important;padding:16px 0 !important;text-align:center !important;font-size:13px !important;color:inherit !important;">Diagnóstico de Sistema e Periféricos · © 2026 Rodrigo Elbl · Todos os direitos reservados</footer>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'N/D').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -351,7 +355,7 @@ async function fetchWithTimeout(url,options={},timeoutMs=12000){
 }
 function exportReport(){
   const pick=(m,f)=>Object.fromEntries(Object.entries(m).map(([k,i])=>[k,f($(i))]));
-  const report={title:'Laudo Técnico de Diagnóstico',generatedAt:new Date().toISOString(),
+  const report={title:'Laudo Técnico de Diagnóstico',gerador:'Diagnóstico de Sistema e Periféricos · © 2026 Rodrigo Elbl · Todos os direitos reservados — relbl.github.io/diagnosticos',generatedAt:new Date().toISOString(),
     laudo:{equipamento:$('fEquip').value,os:$('fOS').value,cliente:$('fCli').value},
     equipamento:pick({dispositivo:'dDev',navegador:'dBr',sistema:'dOS',processador:'dCpu',memoria:'dRam',gpu:'dGpu',bateria:'dBat',qualidadeRede:'dQual',toque:'dTouch',orientacao:'dOri'},e=>e.textContent),
     resultadoTestes:pick({camera:'rCam',microfone:'rMic',som:'rSom',mouse:'rMouse',teclado:'rTec',tela:'rTela',fps:'rFps'},e=>e.value),
@@ -542,6 +546,20 @@ function fps(b){
     fid=requestAnimationFrame(loop);
   })(t);
 }
+
+/* Aviso de autoria: dissuasão técnica, não proteção absoluta */
+(function(){
+  const T=new TextDecoder().decode(Uint8Array.from(atob('RGlhZ27Ds3N0aWNvIGRlIFNpc3RlbWEgZSBQZXJpZsOpcmljb3MgwrcgwqkgMjAyNiBSb2RyaWdvIEVsYmwgwrcgVG9kb3Mgb3MgZGlyZWl0b3MgcmVzZXJ2YWRvcw=='),c=>c.charCodeAt(0)));
+  const S='display:block !important;visibility:visible !important;opacity:1 !important;position:static !important;float:none !important;height:auto !important;max-height:none !important;overflow:visible !important;transform:none !important;clip-path:none !important;margin:32px auto 0 !important;padding:16px 0 !important;text-align:center !important;font-size:13px !important;color:inherit !important;';
+  const fix=()=>{
+    let f=document.getElementById('assin');
+    if(!f||f.parentNode!==document.body){if(f)f.remove();f=document.createElement('footer');f.id='assin';document.body.append(f)}
+    if(f.textContent!==T)f.textContent=T;
+    if(f.getAttribute('style')!==S)f.setAttribute('style',S);
+  };
+  fix();setInterval(fix,2000);
+  new MutationObserver(fix).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['style','id','hidden','class']});
+})();
 </script>
 </body>
 </html>
